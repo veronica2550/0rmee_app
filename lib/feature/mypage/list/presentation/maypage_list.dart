@@ -106,7 +106,7 @@ class MyPageScreen extends StatelessWidget {
                               icon: 'assets/icons/logout.svg',
                               onConfirm: () {
                                 ApiClient.instance.logout();
-                                Navigator.of(context).pop();
+                                context.pop();
                               },
                             );
                           },
