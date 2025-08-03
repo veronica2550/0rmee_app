@@ -32,4 +32,18 @@ class StudentInfoRemoteDataSource {
       throw Exception('학생 데이터를 수정하는 중 오류가 발생했습니다.');
     }
   }
+
+  Future<bool> verifyPassword(String password) async {
+    try {
+      final response = await _dio.post('/students/password', data: {"password": password});
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw Exception('비밀번호 검증 중 오류가 발생했습니다.');
+    }
+  }
 }

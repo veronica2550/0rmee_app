@@ -13,4 +13,8 @@ class StudentInfoRepository {
   Future<void> updateStudentInfo(StudentInfoModel student) async {
     await remoteDataSource.updateStudentInfo(student);
   }
+
+  Future<bool> verifyPassword(String password) {
+    return remoteDataSource.verifyPassword(password);
+  }
 }

@@ -9,3 +9,9 @@ class UpdateStudentInfo extends StudentInfoEvent {
 
   UpdateStudentInfo(this.student);
 }
+
+class VerifyPassword extends StudentInfoEvent {
+  final String password;
+
+  VerifyPassword(this.password);
+}

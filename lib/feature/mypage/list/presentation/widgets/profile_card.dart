@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ormee_app/shared/theme/app_colors.dart';
 import 'package:ormee_app/shared/theme/app_fonts.dart';
 import 'package:ormee_app/shared/widgets/profile.dart';
@@ -13,7 +14,7 @@ class ProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // 회원정보 수정 화면 바로가기
+        context.push('/mypage/info');
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),

@@ -14,7 +14,7 @@ class StudentInfoBloc extends Bloc<StudentInfoEvent, StudentInfoState> {
         final student = await repository.readStudentInfo();
         emit(StudentInfoLoaded(student));
       } catch (e) {
-        emit(StudentInfoError('학생 정보를 불러오는 중 오류: ${e.toString()}'));
+        emit(StudentInfoError('회원 정보를 불러오는 중 오류가 발생했어요.'));
       }
     });
 
@@ -33,8 +33,22 @@ class StudentInfoBloc extends Bloc<StudentInfoEvent, StudentInfoState> {
         emit(StudentInfoLoaded(updated));
         emit(StudentInfoUpdateSuccess());
       } catch (e) {
-        emit(StudentInfoError('학생 정보 수정 실패: ${e.toString()}'));
+        emit(StudentInfoError('회원 정보가 수정되지 않았어요.'));
         emit(currentState);
+      }
+    });
+
+    on<VerifyPassword>((event, emit) async {
+      emit(PasswordVerifying());
+      try {
+        final result = await repository.verifyPassword(event.password);
+        if (result) {
+          emit(PasswordVerified());
+        } else {
+          emit(PasswordVerifyFailed("비밀번호가 일치하지 않아요."));
+        }
+      } catch (e) {
+        emit(PasswordVerifyFailed("비밀번호 확인 중 오류가 발생했습니다."));
       }
     });
   }

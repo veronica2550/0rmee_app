@@ -21,3 +21,13 @@ class StudentInfoError extends StudentInfoState {
 
   StudentInfoError(this.message);
 }
+
+class PasswordVerifying extends StudentInfoState {}
+
+class PasswordVerified extends StudentInfoState {}
+
+class PasswordVerifyFailed extends StudentInfoState {
+  final String message;
+
+  PasswordVerifyFailed(this.message);
+}
