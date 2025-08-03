@@ -84,7 +84,7 @@ class MyPageScreen extends StatelessWidget {
                       icon: 'assets/icons/info.svg',
                       title: '버전',
                       onTap: () {
-                        // 버전 상세
+                        context.push('/mypage/version');
                       },
                     ),
                     Divider(
