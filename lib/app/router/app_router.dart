@@ -8,6 +8,7 @@ import 'package:ormee_app/feature/homework/detail/submission/detail/presentation
 import 'package:ormee_app/feature/memo/presentation/pages/memo.dart';
 import 'package:ormee_app/feature/mypage/history/presentation/pages/mypage_history.dart';
 import 'package:ormee_app/feature/mypage/list/presentation/maypage_list.dart';
+import 'package:ormee_app/feature/mypage/version/presentation/pages/mypage_version.dart';
 import 'package:ormee_app/feature/notice/detail/presentation/page/notice_detail.dart';
 import 'package:ormee_app/feature/auth/signup/presentation/pages/signup.dart';
 import 'package:ormee_app/feature/home/presentation/pages/home.dart';
@@ -215,6 +216,12 @@ class AppRouter {
         path: '/mypage/history',
         builder: (context, state) {
           return MypageHistory();
+        },
+      ),
+      GoRoute(
+        path: '/mypage/version',
+        builder: (context, state) {
+          return MypageVersion();
         },
       ),
       ShellRoute(
