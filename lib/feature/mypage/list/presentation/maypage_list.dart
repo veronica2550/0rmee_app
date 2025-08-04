@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ormee_app/core/network/api_client.dart';
 import 'package:ormee_app/feature/mypage/list/bloc/mypage_list_bloc.dart';
 import 'package:ormee_app/feature/mypage/list/bloc/mypage_list_event.dart';
 import 'package:ormee_app/feature/mypage/list/bloc/mypage_list_state.dart';
@@ -11,6 +12,7 @@ import 'package:ormee_app/feature/mypage/list/presentation/widgets/mypage_card.d
 import 'package:ormee_app/feature/mypage/list/presentation/widgets/profile_card.dart';
 import 'package:ormee_app/shared/theme/app_colors.dart';
 import 'package:ormee_app/shared/theme/app_fonts.dart';
+import 'package:ormee_app/shared/widgets/dialog.dart';
 import 'package:ormee_app/shared/widgets/toast.dart';
 
 class MyPageScreen extends StatelessWidget {
@@ -96,7 +98,19 @@ class MyPageScreen extends StatelessWidget {
                       icon: 'assets/icons/logout.svg',
                       title: '로그아웃',
                       onTap: () {
-                        // 로그아
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return OrmeeDialog(
+                              titleText: '로그아웃 하시겠어요?',
+                              icon: 'assets/icons/logout.svg',
+                              onConfirm: () {
+                                ApiClient.instance.logout();
+                                context.pop();
+                              },
+                            );
+                          },
+                        );
                       },
                     ),
                   ],

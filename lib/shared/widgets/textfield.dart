@@ -43,7 +43,7 @@ import 'package:ormee_app/shared/theme/app_colors.dart';
 //               ),
 
 class OrmeeTextField extends StatefulWidget {
-  final String hintText;
+  final String? hintText;
   final TextEditingController controller;
   final TextInputAction textInputAction;
   final Function(String) onFieldSubmitted;
@@ -52,10 +52,11 @@ class OrmeeTextField extends StatefulWidget {
   final Function(String)? onTextChanged;
   final String? errorText;
   final int? maxLines;
+  final bool? readOnly;
 
   const OrmeeTextField({
     Key? key,
-    required this.hintText,
+    this.hintText,
     required this.controller,
     required this.textInputAction,
     required this.onFieldSubmitted,
@@ -64,6 +65,7 @@ class OrmeeTextField extends StatefulWidget {
     this.onTextChanged,
     this.errorText,
     this.maxLines,
+    this.readOnly,
   }) : super(key: key);
 
   @override
@@ -84,14 +86,19 @@ class _OrmeeTextField1State extends State<OrmeeTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final bool readOnly = widget.readOnly ?? false;
+
     return TextFormField(
       controller: widget.controller,
       focusNode: widget.focusNode,
       textInputAction: widget.textInputAction,
       onFieldSubmitted: widget.onFieldSubmitted,
-      onChanged: widget.onTextChanged, // 텍스트 변경 시 콜백 호출
+      onChanged: widget.onTextChanged,
+      // 텍스트 변경 시 콜백 호출
       obscureText: widget.isPassword == true ? isObscure : false,
       obscuringCharacter: '*',
+      enabled: !readOnly,
+      readOnly: readOnly,
       style: TextStyle(
         fontFamily: 'Pretendard',
         fontSize: 14,
@@ -110,7 +117,8 @@ class _OrmeeTextField1State extends State<OrmeeTextField> {
         // 헬퍼 텍스트 공간 제거
         helperText: '',
         // 컨텐츠 패딩 조정 (필요시)
-        isCollapsed: false, // true로 하면 더 컴팩트해짐
+        isCollapsed: false,
+        // true로 하면 더 컴팩트해짐
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: OrmeeColor.gray[20]!),
@@ -129,12 +137,16 @@ class _OrmeeTextField1State extends State<OrmeeTextField> {
         ),
         errorText: widget.errorText,
         hintText: widget.hintText,
-        hintStyle: TextStyle(
-          fontFamily: 'Pretendard',
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-          color: OrmeeColor.gray[50],
-        ),
+        hintStyle: widget.hintText != null
+            ? TextStyle(
+                fontFamily: 'Pretendard',
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: OrmeeColor.gray[50],
+              )
+            : null,
+        filled: readOnly,
+        fillColor: readOnly ? OrmeeColor.gray[10] : OrmeeColor.white,
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         suffixIcon: Row(
           mainAxisSize: MainAxisSize.min,
