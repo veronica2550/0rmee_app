@@ -7,6 +7,7 @@ import 'package:ormee_app/feature/auth/signup/presentation/widgets/info_text.dar
 import 'package:ormee_app/shared/theme/app_colors.dart';
 import 'package:ormee_app/shared/theme/app_fonts.dart';
 import 'package:ormee_app/shared/widgets/appbar.dart';
+import 'package:ormee_app/shared/widgets/bottomsheet.dart';
 import 'package:ormee_app/shared/widgets/button.dart';
 import 'package:ormee_app/shared/widgets/textfield.dart';
 
@@ -478,7 +479,7 @@ class _SignupContentState extends State<SignupContent> {
               ),
             ),
             SizedBox(width: 8),
-            Text('@', style: TextStyle(fontSize: 16)),
+            Label1Regular14(text: '@'),
             SizedBox(width: 8),
             Expanded(
               flex: 1,
@@ -591,23 +592,6 @@ class _SignupContentState extends State<SignupContent> {
                       _buildPhoneFields(state),
                       InfoText(text: "이메일"),
                       _buildEmailFields(state),
-
-                      // 회원가입 버튼
-                      // SizedBox(
-                      //   width: double.infinity,
-                      //   child: ElevatedButton(
-                      //     onPressed: state.isLoading
-                      //         ? null
-                      //         : () {
-                      //             context.read<SignUpBloc>().add(
-                      //               const SubmitSignUp(),
-                      //             );
-                      //           },
-                      //     child: state.isLoading
-                      //         ? CircularProgressIndicator()
-                      //         : Text('회원가입'),
-                      //   ),
-                      // ),
                     ],
                   ),
                 );
@@ -617,15 +601,12 @@ class _SignupContentState extends State<SignupContent> {
         ),
         bottomNavigationBar: BlocBuilder<SignUpBloc, SignUpState>(
           builder: (context, state) {
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-              child: OrmeeButton(
-                text: "회원가입",
-                isTrue: state.isValid && !state.isLoading,
-                trueAction: () {
-                  context.read<SignUpBloc>().add(const SubmitSignUp());
-                },
-              ),
+            return OrmeeBottomSheet(
+              text: "회원가입 완료하기",
+              isCheck: state.isValid && !state.isLoading,
+              onTap: () {
+                context.read<SignUpBloc>().add(const SubmitSignUp());
+              },
             );
           },
         ),
