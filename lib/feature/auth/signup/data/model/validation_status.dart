@@ -59,7 +59,7 @@ class ValidationResult {
 
   static const ValidationResult emailError = ValidationResult(
     status: ValidationStatus.invalid,
-    message: '이미 등록된 이메일이에요.',
+    message: '한글, 특수문자 입력 불가',
   );
 
   // 성공 메시지들
