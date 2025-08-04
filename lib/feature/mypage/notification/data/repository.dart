@@ -6,11 +6,11 @@ class NotificationSettingRepository {
 
   NotificationSettingRepository(this.remoteDataSource);
 
-  Future<NotificationSettingModel> readStudentInfo() {
+  Future<NotificationSettingModel> readNotificationSetting() {
     return remoteDataSource.fetchStudentInfo();
   }
 
-  Future<void> updateStudentInfo(NotificationSettingModel settings) async {
+  Future<void> updateNotificationSetting(NotificationSettingModel settings) async {
     await remoteDataSource.updateStudentInfo(settings);
   }
 }
