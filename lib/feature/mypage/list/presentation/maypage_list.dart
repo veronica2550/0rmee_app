@@ -11,7 +11,6 @@ import 'package:ormee_app/feature/mypage/list/presentation/widgets/appbar.dart';
 import 'package:ormee_app/feature/mypage/list/presentation/widgets/mypage_card.dart';
 import 'package:ormee_app/feature/mypage/list/presentation/widgets/profile_card.dart';
 import 'package:ormee_app/shared/theme/app_colors.dart';
-import 'package:ormee_app/shared/theme/app_fonts.dart';
 import 'package:ormee_app/shared/widgets/dialog.dart';
 import 'package:ormee_app/shared/widgets/toast.dart';
 

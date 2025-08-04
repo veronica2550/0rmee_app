@@ -323,9 +323,9 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
                               ).requestFocus(_emailProviderFocus),
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          const Text("@", style: TextStyle(fontSize: 16)),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: 6),
+                          Label1Regular14(text: '@', color: OrmeeColor.gray[90]),
+                          const SizedBox(width: 6),
                           Expanded(
                             child: OrmeeTextField(
                               controller: _emailProviderController,
