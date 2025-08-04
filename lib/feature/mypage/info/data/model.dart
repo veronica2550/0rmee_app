@@ -35,4 +35,20 @@ class StudentInfoModel {
 
     return json;
   }
+
+  StudentInfoModel copyWith({
+    String? name,
+    String? username,
+    String? phoneNumber,
+    String? email,
+    String? password,
+  }) {
+    return StudentInfoModel(
+      name: name ?? this.name,
+      username: username ?? this.username,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      email: email ?? this.email,
+      password: password ?? this.password,
+    );
+  }
 }

@@ -855,6 +855,34 @@ class Body2RegularNormal14 extends StatelessWidget {
   );
 }
 
+// Semibold normal 14px
+class Body2SemiBoldNormal14 extends StatelessWidget {
+  final String text;
+  final Color? color;
+  final TextOverflow? overflow;
+
+  const Body2SemiBoldNormal14({
+    super.key,
+    required this.text,
+    this.color,
+    this.overflow,
+  });
+
+  @override
+  Widget build(BuildContext context) => Text(
+    text,
+    style: TextStyle(
+      fontFamily: 'Pretendard',
+      fontWeight: FontWeight.w600,
+      fontSize: 14,
+      height: 1.4,
+      letterSpacing: -0.02 * 14,
+      color: color ?? OrmeeColor.black,
+    ),
+    overflow: overflow ?? TextOverflow.clip,
+  );
+}
+
 // Regular reading 14px (lineHeight 150%)
 class Body2RegularReading14 extends StatelessWidget {
   final String text;

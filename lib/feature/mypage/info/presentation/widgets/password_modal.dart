@@ -4,6 +4,7 @@ import 'package:ormee_app/shared/theme/app_colors.dart';
 import 'package:ormee_app/shared/theme/app_fonts.dart';
 import 'package:ormee_app/shared/widgets/button.dart';
 import 'package:ormee_app/shared/widgets/textfield.dart';
+import 'package:ormee_app/shared/widgets/toast.dart';
 
 class PasswordModal extends StatefulWidget {
   final String titleText;
@@ -34,9 +35,7 @@ class _PasswordModalState extends State<PasswordModal> {
 
   void _handleConfirm() {
     if (_controller.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("비밀번호를 입력하세요.")),
-      );
+      OrmeeToast.show(context, '비밀번호를 입력하세요.');
       return;
     }
     widget.onConfirm(_controller.text);
@@ -75,7 +74,10 @@ class _PasswordModalState extends State<PasswordModal> {
                   child: OrmeeButton(
                     text: '취소',
                     isTrue: false,
-                    falseAction: () => context.pop(),
+                    falseAction: () {
+                      context.pop();
+                      context.pop();
+                    },
                   ),
                 ),
                 const SizedBox(width: 12),
