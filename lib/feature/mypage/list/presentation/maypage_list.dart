@@ -46,7 +46,7 @@ class MyPageScreen extends StatelessWidget {
                       icon: 'assets/icons/list.svg',
                       title: '수강내역',
                       onTap: () {
-                        // 수강내역 페이지
+                        context.push('/mypage/history');
                       },
                     ),
                     MyPageCard(
@@ -86,7 +86,7 @@ class MyPageScreen extends StatelessWidget {
                       icon: 'assets/icons/info.svg',
                       title: '버전',
                       onTap: () {
-                        // 버전 상세
+                        context.push('/mypage/version');
                       },
                     ),
                     Divider(
