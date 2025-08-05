@@ -146,11 +146,17 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
     try {
-      // API 호출
-      final apiData = _getApiData();
-
-      // 실제 API 호출 로직
-      // await signUpRepository.signUp(apiData);
+      // 회원가입 API 호출
+      await ApiService.signUp(
+        username: state.fieldValues[SignUpFieldType.id] ?? '',
+        password: state.fieldValues[SignUpFieldType.password] ?? '',
+        name: state.fieldValues[SignUpFieldType.name] ?? '',
+        phoneNumber: _getFullPhoneNumber(),
+        // 약관 동의 상태 (추후 API에 추가 예정)
+        // terms1: state.terms1,
+        // terms2: state.terms2,
+        // terms3: state.terms3,
+      );
 
       emit(state.copyWith(isLoading: false, isSuccess: true));
     } catch (e) {
@@ -341,7 +347,12 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     final phone2 = state.fieldValues[SignUpFieldType.phone2] ?? '';
     final phone3 = state.fieldValues[SignUpFieldType.phone3] ?? '';
 
-    return '$phone1$phone2$phone3';
+    // 전화번호가 모두 입력되었을 때만 조합하여 반환
+    if (phone1.isNotEmpty && phone2.isNotEmpty && phone3.isNotEmpty) {
+      return '$phone1-$phone2-$phone3';
+    }
+
+    return ''; // 불완전한 전화번호는 빈 문자열 반환
   }
 
   String _getFullEmail() {

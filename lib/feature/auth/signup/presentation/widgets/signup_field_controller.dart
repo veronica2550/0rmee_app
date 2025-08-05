@@ -137,7 +137,7 @@ class SignupFieldController {
       FocusScope.of(context).requestFocus(focusNodes[nextType]!);
     } else {
       // 마지막 필드에서 엔터 누르면 회원가입 실행
-      context.read<SignUpBloc>().add(const SubmitSignUp());
+      // context.read<SignUpBloc>().add(const SubmitSignUp());
     }
   }
 
