@@ -14,6 +14,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     on<SubmitSignUp>(_onSubmitSignUp);
     on<ValidateFields>(_onValidateFields);
     on<CheckIdDuplication>(_onCheckIdDuplication);
+    on<TermsToggled>(_onTermsToggled);
+    on<AllTermsToggled>(_onAllTermsToggled);
   }
 
   void _onFieldChanged(FieldChanged event, Emitter<SignUpState> emit) {
@@ -46,7 +48,12 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
         fieldValues: newFieldValues,
         isFieldNotEmpty: newIsFieldNotEmpty,
         validationResults: newValidationResults,
-        isValid: _validateAllFields(newFieldValues, newValidationResults),
+        isValid: _calculateOverallValidity(
+          newFieldValues,
+          newValidationResults,
+          state.terms1,
+          state.terms2,
+        ),
         errorMessage: null,
       ),
     );
@@ -100,15 +107,22 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     emit(
       state.copyWith(
         validationResults: newValidationResults,
-        isValid: _validateAllFields(state.fieldValues, newValidationResults),
+        isValid: _calculateOverallValidity(
+          state.fieldValues,
+          newValidationResults,
+          state.terms1,
+          state.terms2,
+        ),
       ),
     );
   }
 
   void _onValidateFields(ValidateFields event, Emitter<SignUpState> emit) {
-    final isValid = _validateAllFields(
+    final isValid = _calculateOverallValidity(
       state.fieldValues,
       state.validationResults,
+      state.terms1,
+      state.terms2,
     );
     emit(state.copyWith(isValid: isValid));
   }
@@ -117,6 +131,13 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     SubmitSignUp event,
     Emitter<SignUpState> emit,
   ) async {
+    // 필수 약관 동의 확인
+    if (!state.terms1 || !state.terms2) {
+      emit(state.copyWith(errorMessage: '필수 약관에 동의해주세요.'));
+      return;
+    }
+
+    // 필드 유효성 검사
     if (!_validateAllFields(state.fieldValues, state.validationResults)) {
       emit(state.copyWith(errorMessage: '모든 필드를 올바르게 입력해주세요.'));
       return;
@@ -226,6 +247,26 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     return ValidationResult.initial; // 형식이 맞으면 API 호출 대기
   }
 
+  // 필드만 검증 (약관 제외)
+  bool get isFieldsValid =>
+      _validateAllFields(state.fieldValues, state.validationResults);
+
+  // 전체 유효성 검사를 위한 새로운 함수
+  bool _calculateOverallValidity(
+    Map<SignUpFieldType, String> fieldValues,
+    Map<SignUpFieldType, ValidationResult> validationResults,
+    bool terms1,
+    bool terms2,
+  ) {
+    // 필수 약관 동의 확인
+    if (!terms1 || !terms2) {
+      return false;
+    }
+
+    // 필드 유효성 검사
+    return _validateAllFields(fieldValues, validationResults);
+  }
+
   bool _validateAllFields(
     Map<SignUpFieldType, String> fieldValues,
     Map<SignUpFieldType, ValidationResult> validationResults,
@@ -326,9 +367,15 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   Map<String, String> _getApiData() {
     final Map<String, String> data = {};
 
+    // 필드 데이터 추가
     state.fieldValues.forEach((type, value) {
       data[type.apiKey] = value;
     });
+
+    // 약관 동의 상태 추가
+    data['terms_service'] = state.terms1.toString();
+    data['terms_privacy'] = state.terms2.toString();
+    data['terms_marketing'] = state.terms3.toString();
 
     return data;
   }
@@ -365,19 +412,28 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
                 message: '이미 사용 중인 아이디예요.',
               ),
             },
+            isValid: false, // 중복된 ID가 있으면 전체 유효성도 false
           ),
         );
       } else {
         // 사용 가능한 ID
+        final newValidationResults = {
+          ...state.validationResults,
+          SignUpFieldType.id: ValidationResult(
+            status: ValidationStatus.checked,
+            message: '사용 가능한 아이디예요.',
+          ),
+        };
+
         emit(
           state.copyWith(
-            validationResults: {
-              ...state.validationResults,
-              SignUpFieldType.id: ValidationResult(
-                status: ValidationStatus.checked,
-                message: '사용 가능한 아이디예요.',
-              ),
-            },
+            validationResults: newValidationResults,
+            isValid: _calculateOverallValidity(
+              state.fieldValues,
+              newValidationResults,
+              state.terms1,
+              state.terms2,
+            ),
           ),
         );
       }
@@ -392,9 +448,50 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
               message: '중복 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
             ),
           },
+          isValid: false, // 에러가 있으면 전체 유효성도 false
         ),
       );
     }
+  }
+
+  void _onTermsToggled(TermsToggled event, Emitter<SignUpState> emit) {
+    bool t1 = state.terms1;
+    bool t2 = state.terms2;
+    bool t3 = state.terms3;
+
+    if (event.index == 1) t1 = event.value;
+    if (event.index == 2) t2 = event.value;
+    if (event.index == 3) t3 = event.value;
+
+    emit(
+      state.copyWith(
+        terms1: t1,
+        terms2: t2,
+        terms3: t3,
+        isValid: _calculateOverallValidity(
+          state.fieldValues,
+          state.validationResults,
+          t1,
+          t2,
+        ),
+      ),
+    );
+  }
+
+  void _onAllTermsToggled(AllTermsToggled event, Emitter<SignUpState> emit) {
+    emit(
+      state.copyWith(
+        terms1: event.value,
+        terms2: event.value,
+        terms3: event.value,
+        isValid: _calculateOverallValidity(
+          state.fieldValues,
+          state.validationResults,
+          event.value,
+          event.value,
+        ),
+      ),
+    );
   }
 
   // ID 중복 확인 API 호출 함수

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ormee_app/feature/auth/signup/bloc/signup_bloc.dart';
+import 'package:ormee_app/feature/auth/signup/presentation/widgets/bottom_modal.dart';
 import 'package:ormee_app/feature/auth/signup/presentation/widgets/signup_form.dart';
 import 'package:ormee_app/shared/widgets/appbar.dart';
 import 'package:ormee_app/shared/widgets/bottomsheet.dart';
@@ -58,9 +59,20 @@ class SignupContent extends StatelessWidget {
           builder: (context, state) {
             return OrmeeBottomSheet(
               text: "회원가입 완료하기",
-              isCheck: state.isValid && !state.isLoading,
+              isCheck: state.isFieldsValid && !state.isLoading,
               onTap: () {
-                context.read<SignUpBloc>().add(const SubmitSignUp());
+                final signUpBloc = context.read<SignUpBloc>();
+                showModalBottomSheet(
+                  backgroundColor: Colors.transparent,
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (BuildContext context) => TermsBottomModal(
+                    signUpBloc: signUpBloc,
+                    onAccepted: () {
+                      signUpBloc.add(const SubmitSignUp());
+                    },
+                  ),
+                );
               },
             );
           },

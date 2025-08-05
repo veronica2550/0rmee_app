@@ -41,3 +41,22 @@ class CheckIdDuplication extends SignUpEvent {
   @override
   List<Object> get props => [id];
 }
+
+class TermsToggled extends SignUpEvent {
+  final int index;
+  final bool value;
+
+  const TermsToggled({required this.index, required this.value});
+
+  @override
+  List<Object> get props => [index, value];
+}
+
+class AllTermsToggled extends SignUpEvent {
+  final bool value;
+
+  const AllTermsToggled({required this.value});
+
+  @override
+  List<Object> get props => [value];
+}
