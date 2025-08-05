@@ -11,7 +11,6 @@ import 'package:ormee_app/feature/mypage/list/presentation/widgets/appbar.dart';
 import 'package:ormee_app/feature/mypage/list/presentation/widgets/mypage_card.dart';
 import 'package:ormee_app/feature/mypage/list/presentation/widgets/profile_card.dart';
 import 'package:ormee_app/shared/theme/app_colors.dart';
-import 'package:ormee_app/shared/theme/app_fonts.dart';
 import 'package:ormee_app/shared/widgets/dialog.dart';
 import 'package:ormee_app/shared/widgets/toast.dart';
 
@@ -53,7 +52,7 @@ class MyPageScreen extends StatelessWidget {
                       icon: 'assets/icons/notification_empty.svg',
                       title: '알림설정',
                       onTap: () {
-                        // 알림 설정 화면 라우팅
+                        context.push('/mypage/notification');
                       },
                     ),
                     Divider(
