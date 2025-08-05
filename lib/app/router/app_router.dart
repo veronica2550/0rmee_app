@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ormee_app/feature/auth/login/presentation/pages/login.dart';
+import 'package:ormee_app/feature/auth/signup/presentation/pages/congratulation.dart';
 import 'package:ormee_app/feature/homework/detail/feedback/detail/presentation/pages/feedback_detail.dart';
 import 'package:ormee_app/feature/homework/detail/presentation/page/homework_detail.dart';
 import 'package:ormee_app/feature/homework/detail/submission/detail/presentation/homework_submission_detail.dart';
@@ -58,6 +59,13 @@ class AppRouter {
         path: '/signup',
         name: 'signup',
         builder: (context, state) => Signup(),
+      ),
+      GoRoute(
+        path: '/signup/congratulation',
+        builder: (context, state) {
+          final name = state.extra as String;
+          return Congratulation(name: name);
+        },
       ),
       GoRoute(
         path: '/lecture/detail/:id',
@@ -217,7 +225,7 @@ class AppRouter {
         path: '/mypage/info',
         builder: (context, state) {
           return StudentInfoScreen();
-        }
+        },
       ),
       GoRoute(
         path: '/mypage/history',

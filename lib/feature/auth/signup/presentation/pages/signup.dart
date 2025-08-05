@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ormee_app/feature/auth/signup/bloc/signup_bloc.dart';
+import 'package:ormee_app/feature/auth/signup/data/model/signup_field_type.dart';
 import 'package:ormee_app/feature/auth/signup/presentation/widgets/bottom_modal.dart';
 import 'package:ormee_app/feature/auth/signup/presentation/widgets/signup_form.dart';
 import 'package:ormee_app/shared/widgets/appbar.dart';
@@ -42,7 +43,10 @@ class SignupContent extends StatelessWidget {
           child: BlocListener<SignUpBloc, SignUpState>(
             listener: (context, state) {
               if (state.isSuccess) {
-                context.pop();
+                context.go(
+                  '/signup/congratulation',
+                  extra: state.fieldValues[SignUpFieldType.name],
+                );
               }
 
               if (state.errorMessage != null) {
