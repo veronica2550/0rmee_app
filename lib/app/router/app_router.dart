@@ -9,6 +9,7 @@ import 'package:ormee_app/feature/memo/presentation/pages/memo.dart';
 import 'package:ormee_app/feature/mypage/info/presentation/student_info.dart';
 import 'package:ormee_app/feature/mypage/history/presentation/pages/mypage_history.dart';
 import 'package:ormee_app/feature/mypage/list/presentation/maypage_list.dart';
+import 'package:ormee_app/feature/mypage/notification/presentation/notification_setting.dart';
 import 'package:ormee_app/feature/mypage/version/presentation/pages/mypage_version.dart';
 import 'package:ormee_app/feature/notice/detail/presentation/page/notice_detail.dart';
 import 'package:ormee_app/feature/auth/signup/presentation/pages/signup.dart';
@@ -217,12 +218,18 @@ class AppRouter {
         path: '/mypage/info',
         builder: (context, state) {
           return StudentInfoScreen();
-        }
+        },
       ),
       GoRoute(
         path: '/mypage/history',
         builder: (context, state) {
           return MypageHistory();
+        },
+      ),
+      GoRoute(
+        path: '/mypage/notification',
+        builder: (context, state) {
+          return NotificationSettingScreen();
         },
       ),
       GoRoute(

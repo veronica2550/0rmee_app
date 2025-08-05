@@ -52,7 +52,7 @@ class MyPageScreen extends StatelessWidget {
                       icon: 'assets/icons/notification_empty.svg',
                       title: '알림설정',
                       onTap: () {
-                        // 알림 설정 화면 라우팅
+                        context.push('/mypage/notification');
                       },
                     ),
                     Divider(
