@@ -23,21 +23,11 @@ class NotificationSettingBloc
     on<UpdateNotificationSetting>((event, emit) async {
       if (state is! NotificationSettingLoaded) return;
       final currentState = state as NotificationSettingLoaded;
+
+      emit(NotificationSettingLoaded(event.settings));
+
       try {
         await repository.updateNotificationSetting(event.settings);
-        final updated = NotificationSettingModel(
-            quizRegister: event.settings.quizRegister,
-            quizRemind: event.settings.quizRemind,
-            quizDeadline: event.settings.quizDeadline,
-            homeworkRegister: event.settings.homeworkRegister,
-            homeworkRemind: event.settings.homeworkRemind,
-            homeworkDeadline: event.settings.homeworkDeadline,
-            memo: event.settings.memo,
-            question: event.settings.question,
-            notice: event.settings.notice,
-            event: event.settings.event);
-        emit(NotificationSettingLoaded(updated));
-        emit(NotificationSettingUpdateSuccess());
       } catch (e) {
         emit(NotificationSettingError('알림 설정이 수정되지 않았어요.'));
         emit(currentState);

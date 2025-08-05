@@ -55,4 +55,30 @@ class NotificationSettingModel {
 
     return json;
   }
+
+  NotificationSettingModel copyWith({
+    bool? quizRegister,
+    bool? quizRemind,
+    bool? quizDeadline,
+    bool? homeworkRegister,
+    bool? homeworkRemind,
+    bool? homeworkDeadline,
+    bool? memo,
+    bool? question,
+    bool? notice,
+    bool? event,
+  }) {
+    return NotificationSettingModel(
+      quizRegister: quizRegister ?? this.quizRegister,
+      quizRemind: quizRemind ?? this.quizRemind,
+      quizDeadline: quizDeadline ?? this.quizDeadline,
+      homeworkRegister: homeworkRegister ?? this.homeworkRegister,
+      homeworkRemind: homeworkRemind ?? this.homeworkRemind,
+      homeworkDeadline: homeworkDeadline ?? this.homeworkDeadline,
+      memo: memo ?? this.memo,
+      question: question ?? this.question,
+      notice: notice ?? this.notice,
+      event: event ?? this.event,
+    );
+  }
 }
