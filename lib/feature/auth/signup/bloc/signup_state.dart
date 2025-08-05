@@ -9,6 +9,33 @@ class SignUpState extends Equatable {
   final String? errorMessage;
   final bool isSuccess;
 
+  final bool terms1;
+  final bool terms2;
+  final bool terms3;
+
+  bool get isAllTermsChecked => terms1 && terms2 && terms3;
+  bool get isRequiredTermsChecked => terms1 && terms2;
+  bool get isFieldsValid {
+    List<SignUpFieldType> requiredFields = [
+      SignUpFieldType.name,
+      SignUpFieldType.id,
+      SignUpFieldType.password,
+      SignUpFieldType.passwordConfirm,
+      SignUpFieldType.email,
+    ];
+
+    for (SignUpFieldType type in requiredFields) {
+      final value = fieldValues[type] ?? '';
+      final result = validationResults[type] ?? ValidationResult.initial;
+
+      if (value.isEmpty || result.status == ValidationStatus.invalid) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   const SignUpState({
     required this.fieldValues,
     required this.isFieldNotEmpty,
@@ -17,6 +44,9 @@ class SignUpState extends Equatable {
     this.isLoading = false,
     this.errorMessage,
     this.isSuccess = false,
+    required this.terms1,
+    required this.terms2,
+    required this.terms3,
   });
 
   factory SignUpState.initial() {
@@ -42,6 +72,9 @@ class SignUpState extends Equatable {
       fieldValues: initialValues,
       isFieldNotEmpty: initialNotEmpty,
       validationResults: initialValidation,
+      terms1: false,
+      terms2: false,
+      terms3: false,
     );
   }
 
@@ -53,6 +86,9 @@ class SignUpState extends Equatable {
     bool? isLoading,
     String? errorMessage,
     bool? isSuccess,
+    bool? terms1,
+    bool? terms2,
+    bool? terms3,
   }) {
     return SignUpState(
       fieldValues: fieldValues ?? this.fieldValues,
@@ -62,6 +98,9 @@ class SignUpState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
       isSuccess: isSuccess ?? this.isSuccess,
+      terms1: terms1 ?? this.terms1,
+      terms2: terms2 ?? this.terms2,
+      terms3: terms3 ?? this.terms3,
     );
   }
 
@@ -74,5 +113,8 @@ class SignUpState extends Equatable {
     isLoading,
     errorMessage,
     isSuccess,
+    terms1,
+    terms2,
+    terms3,
   ];
 }
