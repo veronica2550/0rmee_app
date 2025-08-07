@@ -18,12 +18,14 @@ class MemoDialog extends StatelessWidget {
   final VoidCallback? onClose;
   final VoidCallback? onSubmitted;
   final int memoId;
+  final int lectureId;
 
   const MemoDialog({
     super.key,
     this.onClose,
     this.onSubmitted,
     required this.memoId,
+    required this.lectureId,
   });
 
   @override
@@ -38,6 +40,7 @@ class MemoDialog extends StatelessWidget {
         onClose: onClose,
         onSubmitted: onSubmitted,
         memoId: memoId,
+        lectureId: lectureId,
       ),
     );
   }
@@ -47,12 +50,14 @@ class MemoDialogView extends StatefulWidget {
   final VoidCallback? onClose;
   final VoidCallback? onSubmitted;
   final int memoId;
+  final int lectureId;
 
   const MemoDialogView({
     super.key,
     this.onClose,
     this.onSubmitted,
     required this.memoId,
+    required this.lectureId,
   });
 
   @override
@@ -100,6 +105,13 @@ class _MemoDialogViewState extends State<MemoDialogView> {
           OrmeeToast.show(context, state.message);
         } else if (state is MemoDetailError) {
           OrmeeToast.show(context, state.message);
+        } else if (state is MemoDetailLoaded) {
+          // 기존 제출 내용이 있으면 다이얼로그를 닫고 memo 페이지로 이동
+          if (state.memo.submission != null &&
+              state.memo.submission!.isNotEmpty) {
+            widget.onClose?.call();
+            context.push('/lecture/detail/${widget.lectureId}/memo');
+          }
         }
       },
       builder: (context, state) {
