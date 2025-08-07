@@ -38,35 +38,35 @@ final getIt = GetIt.instance;
 void setupDependencies() {
   // lecture/detail/notice
   getIt.registerLazySingleton<NoticeRemoteDataSource>(
-        () => NoticeRemoteDataSource(http.Client()),
+    () => NoticeRemoteDataSource(http.Client()),
   );
   getIt.registerLazySingleton<NoticeRepository>(
-        () => NoticeRepository(getIt()),
+    () => NoticeRepository(getIt()),
   );
   getIt.registerFactory<NoticeBloc>(() => NoticeBloc(getIt()));
 
   // lecture/detail/quiz
   getIt.registerLazySingleton<QuizRemoteDataSource>(
-        () => QuizRemoteDataSource(http.Client()),
+    () => QuizRemoteDataSource(http.Client()),
   );
   getIt.registerLazySingleton<QuizRepository>(() => QuizRepository(getIt()));
   getIt.registerFactory<QuizBloc>(() => QuizBloc(getIt()));
 
   // lecture/detail/homework
   getIt.registerLazySingleton<HomeworkRemoteDataSource>(
-        () => HomeworkRemoteDataSource(http.Client()),
+    () => HomeworkRemoteDataSource(http.Client()),
   );
   getIt.registerLazySingleton<HomeworkRepository>(
-        () => HomeworkRepository(getIt()),
+    () => HomeworkRepository(getIt()),
   );
   getIt.registerFactory<HomeworkBloc>(() => HomeworkBloc(getIt()));
 
   // lecture/detail/lecture
   getIt.registerLazySingleton<LectureRemoteDataSource>(
-        () => LectureRemoteDataSource(http.Client()),
+    () => LectureRemoteDataSource(http.Client()),
   );
   getIt.registerLazySingleton<LectureRepository>(
-        () => LectureRepository(getIt()),
+    () => LectureRepository(getIt()),
   );
   getIt.registerFactory<LectureBloc>(() => LectureBloc(getIt()));
 }
@@ -201,18 +201,18 @@ class _LectureDetailScreenState extends State<LectureDetailScreen>
       providers: [
         BlocProvider(
           create: (_) =>
-          getIt<NoticeBloc>()..add(FetchAllNotices(widget.lectureId)),
+              getIt<NoticeBloc>()..add(FetchAllNotices(widget.lectureId)),
         ),
         BlocProvider(
           create: (_) => getIt<QuizBloc>()..add(FetchQuizzes(widget.lectureId)),
         ),
         BlocProvider(
           create: (_) =>
-          getIt<HomeworkBloc>()..add(FetchHomeworks(widget.lectureId)),
+              getIt<HomeworkBloc>()..add(FetchHomeworks(widget.lectureId)),
         ),
         BlocProvider(
           create: (_) =>
-          getIt<LectureBloc>()..add(FetchLectureDetail(widget.lectureId)),
+              getIt<LectureBloc>()..add(FetchLectureDetail(widget.lectureId)),
         ),
       ],
       child: DefaultTabController(
@@ -277,20 +277,20 @@ class _LectureDetailScreenState extends State<LectureDetailScreen>
                                   return BlocBuilder<QuizBloc, QuizState>(
                                     builder: (context, quizState) {
                                       return BlocBuilder<
-                                          HomeworkBloc,
-                                          HomeworkState
+                                        HomeworkBloc,
+                                        HomeworkState
                                       >(
                                         builder: (context, homeworkState) {
                                           final noticeCount =
-                                          noticeState is NoticeLoaded
+                                              noticeState is NoticeLoaded
                                               ? noticeState.notices.length
                                               : null;
                                           final quizCount =
-                                          quizState is QuizLoaded
+                                              quizState is QuizLoaded
                                               ? quizState.quizzes.length
                                               : null;
                                           final homeworkCount =
-                                          homeworkState is HomeworkLoaded
+                                              homeworkState is HomeworkLoaded
                                               ? homeworkState.homeworks.length
                                               : null;
 
@@ -307,7 +307,7 @@ class _LectureDetailScreenState extends State<LectureDetailScreen>
                                               OrmeeTab(
                                                 text: '숙제',
                                                 notificationCount:
-                                                homeworkCount,
+                                                    homeworkCount,
                                               ),
                                             ],
                                           );
@@ -359,9 +359,7 @@ class _LectureDetailScreenState extends State<LectureDetailScreen>
                           isImage: false,
                           isDetail: false,
                           isPosting: false,
-                          memoState: true,
-                          // TODO: 실제 memoState와 연동
-                          memoId: 1, // TODO: 실제 memoId와 연동
+                          memoState: false,
                         ),
                         body: Center(child: Text('에러: ${state.message}')),
                       );
