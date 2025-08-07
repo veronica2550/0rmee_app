@@ -166,6 +166,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       context.read<NotificationBloc>().add(
                         LoadNotificationsByType(type: types[_currentIndex]),
                       );
+                      // totalCount 재로드
+                      context.read<NotificationBloc>().add(
+                        LoadNotifications(type: types[_currentIndex]),
+                      );
+
                       // 읽음 처리 후 현재 타입의 카운트만 업데이트
                       _updateCurrentTypeCount();
                     },
