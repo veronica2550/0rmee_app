@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ormee_app/shared/theme/app_colors.dart';
@@ -15,11 +17,38 @@ class ImagesSection extends StatefulWidget {
 class _ImagesSectionState extends State<ImagesSection> {
   int currentPage = 0;
   late final PageController _pageController;
+  final Map<String, Size> _imageSizes = {};
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(viewportFraction: 0.94);
+
+    for (final url in widget.imageUrls) {
+      _resolveImageSize(url);
+    }
+  }
+
+  Future<void> _resolveImageSize(String url) async {
+    final image = Image.network(url);
+    final completer = Completer<Size>();
+
+    image.image.resolve(const ImageConfiguration()).addListener(
+      ImageStreamListener((ImageInfo info, bool _) {
+        final mySize = Size(
+          info.image.width.toDouble(),
+          info.image.height.toDouble(),
+        );
+        if (mounted) {
+          setState(() {
+            _imageSizes[url] = mySize;
+          });
+        }
+        completer.complete(mySize);
+      }),
+    );
+
+    await completer.future;
   }
 
   @override
@@ -27,12 +56,18 @@ class _ImagesSectionState extends State<ImagesSection> {
     if (widget.imageUrls.isEmpty) return const SizedBox();
 
     final screenWidth = MediaQuery.of(context).size.width;
+    final currentUrl = widget.imageUrls[currentPage];
+    final imageSize = _imageSizes[currentUrl];
+
+    final imageHeight = (imageSize != null && imageSize.width > 0)
+        ? screenWidth * imageSize.height / imageSize.width
+        : 350.0;
 
     return Align(
       alignment: Alignment.center,
       child: SizedBox(
         width: screenWidth,
-        height: 350,
+        height: imageHeight,
         child: Stack(
           children: [
             PageView.builder(
@@ -44,6 +79,7 @@ class _ImagesSectionState extends State<ImagesSection> {
                 });
               },
               itemBuilder: (context, index) {
+                final url = widget.imageUrls[index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: GestureDetector(
@@ -67,7 +103,7 @@ class _ImagesSectionState extends State<ImagesSection> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.network(
-                          widget.imageUrls[index],
+                          url,
                           fit: BoxFit.cover,
                           width: double.infinity,
                         ),
@@ -81,7 +117,8 @@ class _ImagesSectionState extends State<ImagesSection> {
               bottom: 14,
               right: 32,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding:
+                const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: OrmeeColor.gray[80]!.withOpacity(0.6),
                   borderRadius: BorderRadius.circular(12),
