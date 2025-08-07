@@ -252,28 +252,31 @@ class AppRouter {
           GoRoute(
             path: '/home',
             name: 'home',
-            builder: (context, state) => const HomeScreenWrapper(),
+            pageBuilder: (context, state) =>
+                NoTransitionPage(child: const HomeScreenWrapper()),
           ),
           GoRoute(
             path: '/lecture',
             name: 'lecture home',
-            builder: (context, state) => LectureHome(),
+            pageBuilder: (context, state) =>
+                NoTransitionPage(child: LectureHome()),
           ),
           GoRoute(
             path: '/notification',
-            name: "notification",
-            builder: (context, state) {
-              return BlocProvider(
+            name: 'notification',
+            pageBuilder: (context, state) => NoTransitionPage(
+              child: BlocProvider(
                 create: (_) =>
                     NotificationBloc(repository: NotificationRepository()),
                 child: const NotificationScreen(),
-              );
-            },
+              ),
+            ),
           ),
           GoRoute(
             path: '/mypage',
             name: 'mypage',
-            builder: (context, state) => MyPageScreen(),
+            pageBuilder: (context, state) =>
+                NoTransitionPage(child: MyPageScreen()),
           ),
         ],
       ),
