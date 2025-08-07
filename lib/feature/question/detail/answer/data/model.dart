@@ -17,7 +17,7 @@ class AnswerDetailModel {
     return AnswerDetailModel(
       author: AuthorModel.fromValue(
         json['data']['teacherName'] ?? '',
-        json['data']['teacherImage'],
+        json['data']['teacherImage'] ?? '',
       ),
       content: json['data']['content'] ?? "",
       filePaths: List<String>.from(json['data']['filePaths'] ?? []),
