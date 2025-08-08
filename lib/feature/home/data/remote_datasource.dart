@@ -1,8 +1,5 @@
-import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:ormee_app/core/constants/api.dart';
 import 'package:ormee_app/core/network/api_client.dart';
-import 'package:ormee_app/feature/auth/token/update.dart';
 import 'package:ormee_app/feature/home/data/models/banner.dart';
 import 'package:ormee_app/feature/home/data/models/homework_card.dart';
 import 'package:ormee_app/feature/home/data/models/lecture_card.dart';
