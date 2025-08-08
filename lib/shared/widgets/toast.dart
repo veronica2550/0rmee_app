@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ormee_app/shared/theme/app_colors.dart';
 import 'package:ormee_app/shared/theme/app_fonts.dart';
 
 // 사용법:
-// OrmeeToast.show(context, "message");
+// OrmeeToast.show(context, "message", true);
 // 이렇게 호출
 
 class OrmeeToast {
-  static void show(BuildContext context, String message) {
+  static void show(BuildContext context, String message, bool isError) {
     final overlay = Overlay.of(context);
     final overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
@@ -17,16 +18,19 @@ class OrmeeToast {
         child: Material(
           color: Colors.transparent,
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
             decoration: BoxDecoration(
-              color: Color(0xE5545454),
-              borderRadius: BorderRadius.circular(8),
+              color: isError ? OrmeeColor.systemRed : OrmeeColor.systemGreen,
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: Center(
-              child: Body2RegularNormal14(
-                text: message,
-                color: OrmeeColor.white,
-              ),
+            child: Row(
+              children: [
+                SvgPicture.asset(isError? 'assets/icons/alert.svg' : 'assets/icons/complete.svg'),
+                Headline1SemiBold18(
+                  text: message,
+                  color: OrmeeColor.gray[90],
+                ),
+              ],
             ),
           ),
         ),

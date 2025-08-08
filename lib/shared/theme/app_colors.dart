@@ -6,7 +6,9 @@ final class OrmeeColor extends Color {
 
   static const Color systemError = Color(0xFFFF5555);
   static const Color systemAlert = Color(0xFFE96D6D);
+  static const Color systemRed = Color.fromARGB(255, 251, 232, 232);
   static const Color systemPositive = Color(0xFF14DB6E);
+  static const Color systemGreen = Color.fromARGB(255, 222, 245, 226);
   static const Color black = Color(0xFF000000);
   static const Color white = Color(0xFFFFFFFF);
 
