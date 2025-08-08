@@ -26,7 +26,7 @@ class MyPageScreen extends StatelessWidget {
       child: BlocConsumer<MyPageListBloc, MyPageListState>(
         listener: (context, state) {
           if (state is MyPageListError) {
-            OrmeeToast.show(context, state.message);
+            OrmeeToast.show(context, state.message, true);
             context.pop();
           }
         },

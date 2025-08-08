@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ormee_app/shared/theme/app_colors.dart';
-import 'package:ormee_app/shared/theme/app_fonts.dart';
 
 /* 
 SearchBar(

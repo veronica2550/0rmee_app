@@ -113,7 +113,7 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
       child: BlocConsumer<StudentInfoBloc, StudentInfoState>(
         listener: (context, state) {
           if (state is PasswordVerifyFailed) {
-            OrmeeToast.show(context, state.message);
+            OrmeeToast.show(context, state.message, true);
           } else if (state is PasswordVerified) {
             setState(() {
               _isVerified = true;
@@ -125,10 +125,10 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
             _nameController.text = state.student.name;
             _setEmail(state.student.email);
           } else if (state is StudentInfoUpdateSuccess) {
-            OrmeeToast.show(context, "회원 정보가 수정되었어요.");
+            OrmeeToast.show(context, "회원 정보가 수정되었어요.", false);
             context.pop();
           } else if (state is StudentInfoError) {
-            OrmeeToast.show(context, state.message);
+            OrmeeToast.show(context, state.message, true);
           }
         },
         builder: (context, state) {

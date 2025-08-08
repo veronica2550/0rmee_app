@@ -12,6 +12,7 @@ import 'package:ormee_app/feature/search/presentation/widgets/notification_resul
 import 'package:ormee_app/shared/theme/app_colors.dart';
 import 'package:ormee_app/shared/theme/app_fonts.dart';
 import 'package:ormee_app/shared/widgets/search_bar.dart';
+import 'package:ormee_app/shared/widgets/toast.dart';
 
 class NotificationSearch extends StatelessWidget {
   const NotificationSearch({super.key});
@@ -113,12 +114,7 @@ class _NotificationSearchViewState extends State<_NotificationSearchView> {
         listener: (context, state) {
           if (state.status == NotificationSearchStatus.failure &&
               state.errorMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage!),
-                backgroundColor: Colors.red,
-              ),
-            );
+            OrmeeToast.show(context, state.errorMessage!, true);
           }
         },
         child: Container(

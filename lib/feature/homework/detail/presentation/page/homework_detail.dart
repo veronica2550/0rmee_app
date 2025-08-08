@@ -31,7 +31,7 @@ class HomeworkDetailScreen extends StatelessWidget {
       child: BlocConsumer<HomeworkDetailBloc, HomeworkDetailState>(
         listener: (context, state) {
           if (state is HomeworkDetailError) {
-            OrmeeToast.show(context, state.message);
+            OrmeeToast.show(context, state.message, true);
             context.pop();
           }
         },

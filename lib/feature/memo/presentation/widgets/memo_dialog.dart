@@ -82,13 +82,13 @@ class _MemoDialogViewState extends State<MemoDialogView> {
     return BlocConsumer<MemoBloc, MemoState>(
       listener: (context, state) {
         if (state is MemoSubmitSuccess) {
-          OrmeeToast.show(context, state.message);
+          OrmeeToast.show(context, state.message, false);
           // 제출 성공 시 onSubmitted 콜백 호출
           widget.onSubmitted?.call();
         } else if (state is MemoSubmitError) {
-          OrmeeToast.show(context, state.message);
+          OrmeeToast.show(context, state.message, true);
         } else if (state is MemoDetailError) {
-          OrmeeToast.show(context, state.message);
+          OrmeeToast.show(context, state.message, true);
         }
       },
       builder: (context, state) {
@@ -262,7 +262,7 @@ class _MemoDialogViewState extends State<MemoDialogView> {
     final submission = _controller.text.trim();
 
     if (submission.isEmpty) {
-      OrmeeToast.show(context, '제출할 내용을 입력해주세요.');
+      OrmeeToast.show(context, '제출할 내용을 입력해주세요.', true);
       return;
     }
 

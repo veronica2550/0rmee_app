@@ -63,7 +63,7 @@ class _OrmeeAppBarState extends State<OrmeeAppBar> {
 
   void _showMemoDialog(BuildContext context) {
     if (widget.memoId == null) {
-      OrmeeToast.show(context, '쪽지 정보를 불러올 수 없습니다.');
+      OrmeeToast.show(context, '쪽지 정보를 불러올 수 없습니다.', true);
       return;
     }
 

@@ -35,7 +35,7 @@ class _PasswordModalState extends State<PasswordModal> {
 
   void _handleConfirm() {
     if (_controller.text.isEmpty) {
-      OrmeeToast.show(context, '비밀번호를 입력하세요.');
+      OrmeeToast.show(context, '비밀번호를 입력하세요.', true);
       return;
     }
     widget.onConfirm(_controller.text);
