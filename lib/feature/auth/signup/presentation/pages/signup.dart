@@ -50,7 +50,7 @@ class SignupContent extends StatelessWidget {
               }
 
               if (state.errorMessage != null) {
-                OrmeeToast.show(context, state.errorMessage!);
+                OrmeeToast.show(context, state.errorMessage!, true);
               }
             },
             child: Padding(
