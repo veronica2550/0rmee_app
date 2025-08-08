@@ -51,3 +51,4 @@ windows/*
 
 # firebase key
 google-services.json
+GoogleService-info.plist
