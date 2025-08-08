@@ -16,6 +16,7 @@ import 'package:ormee_app/shared/widgets/button.dart';
 import 'package:ormee_app/shared/widgets/label.dart';
 import 'package:ormee_app/shared/widgets/profile.dart';
 import 'package:ormee_app/feature/quiz/detail/data/repository.dart';
+import 'package:ormee_app/shared/widgets/toast.dart';
 
 class QuizDetailScreen extends StatefulWidget {
   final int quizId;
@@ -87,12 +88,7 @@ class QuizDetailView extends StatelessWidget {
         body: BlocConsumer<QuizBloc, QuizState>(
           listener: (context, state) {
             if (state is QuizError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.red,
-                ),
-              );
+              OrmeeToast.show(context, state.message, true);
             }
           },
           builder: (context, state) {
