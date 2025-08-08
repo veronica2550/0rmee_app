@@ -34,13 +34,13 @@ Future<void> downloadFile({
         mimeType: MimeType.other, fileExtension: '',
       );
 
-      OrmeeToast.show(context, "📁 '$fileName' 저장 완료. 파일 앱에서 확인하세요.");
+      OrmeeToast.show(context, "'$fileName' 저장 완료. 파일 앱에서 확인하세요.", false);
     } else {
       throw UnsupportedError("지원하지 않는 플랫폼이에요.");
     }
   } catch (e, stack) {
     debugPrint("❌ 다운로드 실패: $e");
     debugPrint("StackTrace: $stack");
-    OrmeeToast.show(context, "❌ 파일을 저장하지 못했어요. 다시 시도해 주세요.");
+    OrmeeToast.show(context, "파일을 저장 실패. 다시 시도해 주세요.", true);
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:ormee_app/shared/theme/app_colors.dart';
 import 'package:ormee_app/shared/theme/app_fonts.dart';
 import 'package:ormee_app/shared/widgets/state_badge.dart';
-import 'package:ormee_app/shared/widgets/teacher_badge.dart';
 import 'package:ormee_app/shared/widgets/teacher_badge2.dart';
 
 class AssignmentCard extends StatelessWidget {

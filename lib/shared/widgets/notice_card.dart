@@ -4,7 +4,6 @@ import 'package:ormee_app/shared/widgets/teacher_badge2.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ormee_app/shared/theme/app_colors.dart';
 import 'package:ormee_app/shared/theme/app_fonts.dart';
-import 'package:ormee_app/shared/widgets/teacher_badge.dart';
 
 class NoticeCard extends StatefulWidget {
   final int noticeId;
