@@ -32,6 +32,7 @@ import 'package:ormee_app/feature/lecture/detail/quiz/data/quiz_repository.dart'
 import 'package:ormee_app/shared/widgets/appbar.dart';
 import 'package:ormee_app/shared/widgets/tab.dart';
 import 'package:get_it/get_it.dart';
+import 'package:ormee_app/shared/widgets/toast.dart';
 
 final getIt = GetIt.instance;
 
@@ -139,9 +140,7 @@ class _LectureDetailScreenState extends State<LectureDetailScreen>
     } catch (e) {
       print('❌ [LECTURE] Failed to initialize SSE Manager: $e');
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('연결 실패: $e')));
+        OrmeeToast.show(context, '연결 실패: $e', true);
       }
     }
   }
