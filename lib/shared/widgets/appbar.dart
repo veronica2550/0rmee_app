@@ -46,13 +46,22 @@ class _OrmeeAppBarState extends State<OrmeeAppBar> {
   @override
   void initState() {
     super.initState();
-    _currentMemoState = widget.memoState ?? false;
+    // memoId가 -1이면 _currentMemoState를 false로 설정
+    if (widget.memoId == -1) {
+      _currentMemoState = false;
+    } else {
+      _currentMemoState = widget.memoState ?? false;
+    }
   }
 
   @override
   void didUpdateWidget(OrmeeAppBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.memoState != null && widget.memoState != _currentMemoState) {
+    // memoId가 -1이면 _currentMemoState를 false로 유지
+    if (widget.memoId == -1) {
+      _currentMemoState = false;
+    } else if (widget.memoState != null &&
+        widget.memoState != _currentMemoState) {
       _currentMemoState = widget.memoState!;
     }
   }
@@ -94,6 +103,11 @@ class _OrmeeAppBarState extends State<OrmeeAppBar> {
   }
 
   void _handleMemoTap(BuildContext context) {
+    // memoId가 -1인 경우 쪽지를 열지 않음
+    if (widget.memoId == -1) {
+      return;
+    }
+
     // 기존 제출 내용이 있으면 항상 memo 페이지로 이동
     if (widget.hasSubmission == true) {
       context.push('/lecture/detail/${widget.lectureId}/memo');
