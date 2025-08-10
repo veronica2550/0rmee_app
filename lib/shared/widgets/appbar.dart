@@ -17,6 +17,7 @@ class OrmeeAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool? memoState;
   final int? memoId;
   final int? lectureId;
+  final bool? hasSubmission; // 기존 제출 내용이 있는지 확인하는 파라미터 추가
 
   const OrmeeAppBar({
     Key? key,
@@ -29,6 +30,7 @@ class OrmeeAppBar extends StatefulWidget implements PreferredSizeWidget {
     this.memoState,
     this.memoId,
     this.lectureId,
+    this.hasSubmission, // 추가된 파라미터
   }) : super(key: key);
 
   @override
@@ -44,13 +46,22 @@ class _OrmeeAppBarState extends State<OrmeeAppBar> {
   @override
   void initState() {
     super.initState();
-    _currentMemoState = widget.memoState ?? false;
+    // memoId가 -1이면 _currentMemoState를 false로 설정
+    if (widget.memoId == -1) {
+      _currentMemoState = false;
+    } else {
+      _currentMemoState = widget.memoState ?? false;
+    }
   }
 
   @override
   void didUpdateWidget(OrmeeAppBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.memoState != null && widget.memoState != _currentMemoState) {
+    // memoId가 -1이면 _currentMemoState를 false로 유지
+    if (widget.memoId == -1) {
+      _currentMemoState = false;
+    } else if (widget.memoState != null &&
+        widget.memoState != _currentMemoState) {
       _currentMemoState = widget.memoState!;
     }
   }
@@ -75,6 +86,7 @@ class _OrmeeAppBarState extends State<OrmeeAppBar> {
         child: Center(
           child: MemoDialog(
             memoId: widget.memoId!,
+            lectureId: widget.lectureId!,
             onClose: () {
               entry.remove();
             },
@@ -88,6 +100,26 @@ class _OrmeeAppBarState extends State<OrmeeAppBar> {
     );
 
     Overlay.of(context, rootOverlay: true).insert(entry);
+  }
+
+  void _handleMemoTap(BuildContext context) {
+    // memoId가 -1인 경우 쪽지를 열지 않음
+    if (widget.memoId == -1) {
+      return;
+    }
+
+    // 기존 제출 내용이 있으면 항상 memo 페이지로 이동
+    if (widget.hasSubmission == true) {
+      context.push('/lecture/detail/${widget.lectureId}/memo');
+      return;
+    }
+
+    // 기존 제출 내용이 없을 때의 기존 로직
+    if (_currentMemoState == true) {
+      _showMemoDialog(context);
+    } else if (_currentMemoState == false) {
+      context.push('/lecture/detail/${widget.lectureId}/memo');
+    }
   }
 
   @override
@@ -141,15 +173,7 @@ class _OrmeeAppBarState extends State<OrmeeAppBar> {
                     children: [
                       SizedBox(width: 30),
                       GestureDetector(
-                        onTap: () {
-                          if (_currentMemoState == true) {
-                            _showMemoDialog(context);
-                          } else if (_currentMemoState == false) {
-                            context.push(
-                              '/lecture/detail/${widget.lectureId}/memo',
-                            );
-                          }
-                        },
+                        onTap: () => _handleMemoTap(context), // 메소드로 분리
                         child: SvgPicture.asset(
                           _currentMemoState
                               ? 'assets/icons/memo_open.svg'

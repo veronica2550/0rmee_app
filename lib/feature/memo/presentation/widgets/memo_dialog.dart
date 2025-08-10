@@ -18,12 +18,14 @@ class MemoDialog extends StatelessWidget {
   final VoidCallback? onClose;
   final VoidCallback? onSubmitted;
   final int memoId;
+  final int lectureId;
 
   const MemoDialog({
     super.key,
     this.onClose,
     this.onSubmitted,
     required this.memoId,
+    required this.lectureId,
   });
 
   @override
@@ -38,6 +40,7 @@ class MemoDialog extends StatelessWidget {
         onClose: onClose,
         onSubmitted: onSubmitted,
         memoId: memoId,
+        lectureId: lectureId,
       ),
     );
   }
@@ -47,12 +50,14 @@ class MemoDialogView extends StatefulWidget {
   final VoidCallback? onClose;
   final VoidCallback? onSubmitted;
   final int memoId;
+  final int lectureId;
 
   const MemoDialogView({
     super.key,
     this.onClose,
     this.onSubmitted,
     required this.memoId,
+    required this.lectureId,
   });
 
   @override
@@ -62,12 +67,23 @@ class MemoDialogView extends StatefulWidget {
 class _MemoDialogViewState extends State<MemoDialogView> {
   late final TextEditingController _controller;
   late final FocusNode _focusNode;
+  bool _hasText = false; // 텍스트 입력 상태를 추적하는 변수 추가
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
     _focusNode = FocusNode();
+
+    // 텍스트 변화를 실시간으로 감지하는 리스너 추가
+    _controller.addListener(() {
+      final hasText = _controller.text.trim().isNotEmpty;
+      if (_hasText != hasText) {
+        setState(() {
+          _hasText = hasText;
+        });
+      }
+    });
   }
 
   @override
@@ -89,6 +105,13 @@ class _MemoDialogViewState extends State<MemoDialogView> {
           OrmeeToast.show(context, state.message, true);
         } else if (state is MemoDetailError) {
           OrmeeToast.show(context, state.message, true);
+        } else if (state is MemoDetailLoaded) {
+          // 기존 제출 내용이 있으면 다이얼로그를 닫고 memo 페이지로 이동
+          if (state.memo.submission != null &&
+              state.memo.submission!.isNotEmpty) {
+            widget.onClose?.call();
+            context.push('/lecture/detail/${widget.lectureId}/memo');
+          }
         }
       },
       builder: (context, state) {
@@ -145,11 +168,17 @@ class _MemoDialogViewState extends State<MemoDialogView> {
     if (state is MemoDetailLoaded) {
       final memo = state.memo;
 
-      // 기존 제출 내용이 있으면 텍스트 필드에 표시
+      // 기존 제출 내용이 있으면 텍스트 필드에 표시 (한 번만)
       if (memo.submission != null &&
           memo.submission!.isNotEmpty &&
           _controller.text.isEmpty) {
-        _controller.text = memo.submission!;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _controller.text = memo.submission!;
+          // 기존 내용이 있으면 _hasText도 업데이트
+          setState(() {
+            _hasText = memo.submission!.trim().isNotEmpty;
+          });
+        });
       }
 
       return Column(
@@ -180,7 +209,7 @@ class _MemoDialogViewState extends State<MemoDialogView> {
                         ? null
                         : () => _submitMemo(context, memo),
                     text: isSubmitting ? '제출 중...' : '제출',
-                    isTrue: !isSubmitting && _controller.text.trim().isNotEmpty,
+                    isTrue: !isSubmitting && _hasText, // _hasText 변수 사용
                   );
                 },
               ),
