@@ -17,7 +17,6 @@ import 'package:ormee_app/shared/widgets/appbar.dart';
 import 'package:ormee_app/shared/widgets/bottomsheet_image.dart';
 import 'package:ormee_app/shared/widgets/temp_image_viewer.dart';
 import 'package:ormee_app/shared/widgets/toast.dart';
-import 'package:http/http.dart' as http;
 
 class HomeworkCreate extends StatefulWidget {
   final int homeworkId;
@@ -117,7 +116,7 @@ class _HomeworkCreateState extends State<HomeworkCreate> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => HomeworkCreateBloc(
-        HomeworkRepository(HomeworkCreateRemoteDataSource(http.Client())),
+        HomeworkRepository(HomeworkCreateRemoteDataSource()),
         AttachmentRepository(),
       ),
       child: BlocListener<HomeworkCreateBloc, HomeworkCreateState>(

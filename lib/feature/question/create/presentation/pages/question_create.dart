@@ -18,7 +18,6 @@ import 'package:ormee_app/shared/widgets/appbar.dart';
 import 'package:ormee_app/shared/widgets/bottomsheet_image.dart';
 import 'package:ormee_app/shared/widgets/temp_image_viewer.dart';
 import 'package:ormee_app/shared/widgets/toast.dart';
-import 'package:http/http.dart' as http;
 
 class QuestionCreate extends StatefulWidget {
   final int lectureId;
@@ -117,7 +116,7 @@ class _QuestionCreateState extends State<QuestionCreate> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => QuestionCreateBloc(
-        QuestionRepository(QuestionCreateRemoteDataSource(http.Client())),
+        QuestionRepository(QuestionCreateRemoteDataSource()),
         AttachmentRepository(),
       ),
       child: BlocListener<QuestionCreateBloc, QuestionCreateState>(
