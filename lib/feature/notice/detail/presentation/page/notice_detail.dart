@@ -31,7 +31,7 @@ class NoticeDetailScreen extends StatelessWidget {
       child: BlocConsumer<NoticeDetailBloc, NoticeDetailState>(
         listener: (context, state) {
           if (state is NoticeDetailError) {
-            OrmeeToast.show(context, state.message);
+            OrmeeToast.show(context, state.message, true);
             context.pop();
           }
         },

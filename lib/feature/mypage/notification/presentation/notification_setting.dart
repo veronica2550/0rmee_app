@@ -31,7 +31,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
       child: BlocConsumer<NotificationSettingBloc, NotificationSettingState>(
         listener: (context, state) {
           if (state is NotificationSettingError) {
-            OrmeeToast.show(context, state.message);
+            OrmeeToast.show(context, state.message, true);
           }
         },
         builder: (context, state) {

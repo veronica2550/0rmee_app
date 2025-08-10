@@ -22,7 +22,7 @@ class Branch extends StatelessWidget {
                 children: [
                   SvgPicture.asset("assets/images/logo.svg"),
                   SizedBox(height: 16),
-                  Body2RegularNormal14(text: "하나로 끝내는 수업 관리의 새로운 기준"),
+                  Body2RegularNormal14(text: "선생님과 연결되는 단 하나의 플랫폼"),
                 ],
               ),
               // 라우팅

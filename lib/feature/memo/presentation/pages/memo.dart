@@ -49,7 +49,7 @@ class MemoView extends StatelessWidget {
       body: BlocConsumer<MemoBloc, MemoState>(
         listener: (context, state) {
           if (state is MemoListError) {
-            OrmeeToast.show(context, state.message);
+            OrmeeToast.show(context, state.message, true);
           }
         },
         builder: (context, state) {

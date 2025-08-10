@@ -1,16 +1,10 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:ormee_app/core/constants/api.dart';
+import 'package:ormee_app/core/network/api_client.dart';
 
 class AttachmentRepository {
-  final Dio _dio = Dio(
-    BaseOptions(
-      baseUrl: '${API.hostConnect}',
-      connectTimeout: Duration(seconds: 10),
-      receiveTimeout: Duration(seconds: 10),
-    ),
-  );
+  final Dio _dio = ApiClient.instance.dio;
 
   Future<int> uploadAttachment({
     required File file,

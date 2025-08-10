@@ -26,7 +26,7 @@ class QuestionListScreen extends StatelessWidget {
       child: BlocConsumer<QuestionListBloc, QuestionListState>(
         listener: (context, state) {
           if (state is QuestionListError) {
-            OrmeeToast.show(context, state.message);
+            OrmeeToast.show(context, state.message, true);
             context.pop();
           }
         },
@@ -55,7 +55,7 @@ class QuestionListScreen extends StatelessWidget {
                     return InkWell(
                       onTap: () {
                         if (!question.isMine && question.isLocked) {
-                          OrmeeToast.show(context, '이 글은 작성자만 볼 수 있어요.');
+                          OrmeeToast.show(context, '이 글은 작성자만 볼 수 있어요.', true);
                         } else {
                           context.push('/question/detail/${question.id}');
                         }

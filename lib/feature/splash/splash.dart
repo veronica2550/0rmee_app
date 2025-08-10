@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             SvgPicture.asset("assets/images/logo.svg"),
             const SizedBox(height: 16),
-            Body2RegularNormal14(text: "하나로 끝내는 수업 관리의 새로운 기준"),
+            Body2RegularNormal14(text: "선생님과 연결되는 단 하나의 플랫폼"),
           ],
         ), // 혹은 로고 이미지 등
       ),

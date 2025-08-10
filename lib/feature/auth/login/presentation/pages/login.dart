@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ormee_app/app/router/app_router.dart';
 import 'package:ormee_app/feature/auth/login/bloc/login_bloc.dart';
 import 'package:ormee_app/feature/auth/login/bloc/login_event.dart';
 import 'package:ormee_app/feature/auth/login/bloc/login_state.dart';
@@ -51,10 +50,10 @@ class _LoginState extends State<Login> {
       child: BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state.status == LoginStatus.success) {
-            OrmeeToast.show(context, "로그인 성공");
+            OrmeeToast.show(context, "로그인 성공", false);
             context.push('/home');
           } else if (state.status == LoginStatus.failure) {
-            OrmeeToast.show(context, "로그인 실패");
+            OrmeeToast.show(context, "로그인 실패", true);
           }
         },
         child: GestureDetector(
@@ -75,7 +74,7 @@ class _LoginState extends State<Login> {
                           children: [
                             SvgPicture.asset("assets/images/logo.svg"),
                             const SizedBox(height: 16),
-                            Body2RegularNormal14(text: "하나로 끝내는 수업 관리의 새로운 기준"),
+                            Body2RegularNormal14(text: "선생님과 연결되는 단 하나의 플랫폼"),
                           ],
                         ),
                         Column(
@@ -144,7 +143,7 @@ class _LoginState extends State<Login> {
                                 const SizedBox(width: 12),
                                 GestureDetector(
                                   onTap: () {
-                                    AppRouter.router.push('/signup');
+                                    context.push('/branch');
                                   },
                                   child: Label2Regular12(
                                     text: "회원가입",

@@ -33,7 +33,7 @@ class FeedbackDetailScreen extends StatelessWidget {
       >(
         listener: (context, state) {
           if (state is FeedbackDetailError) {
-            OrmeeToast.show(context, state.message);
+            OrmeeToast.show(context, state.message, true);
             context.pop();
           }
         },

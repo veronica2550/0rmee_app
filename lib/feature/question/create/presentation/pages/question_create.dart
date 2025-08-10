@@ -16,10 +16,8 @@ import 'package:ormee_app/shared/theme/app_colors.dart';
 import 'package:ormee_app/shared/theme/app_fonts.dart';
 import 'package:ormee_app/shared/widgets/appbar.dart';
 import 'package:ormee_app/shared/widgets/bottomsheet_image.dart';
-import 'package:ormee_app/shared/widgets/button.dart';
 import 'package:ormee_app/shared/widgets/temp_image_viewer.dart';
 import 'package:ormee_app/shared/widgets/toast.dart';
-import 'package:http/http.dart' as http;
 
 class QuestionCreate extends StatefulWidget {
   final int lectureId;
@@ -39,7 +37,7 @@ class _QuestionCreateState extends State<QuestionCreate> {
       final fileSize = await file.length();
 
       if (fileSize > 10 * 1024 * 1024) {
-        OrmeeToast.show(context, '파일 크기가 10MB를 초과합니다.');
+        OrmeeToast.show(context, '파일 크기가 10MB를 초과합니다.', true);
         return;
       }
 
@@ -52,7 +50,7 @@ class _QuestionCreateState extends State<QuestionCreate> {
       }
 
       if (totalSize > 50 * 1024 * 1024) {
-        OrmeeToast.show(context, '총 파일 크기가 50MB를 초과합니다.');
+        OrmeeToast.show(context, '총 파일 크기가 50MB를 초과합니다.', true);
         return;
       }
 
@@ -100,7 +98,7 @@ class _QuestionCreateState extends State<QuestionCreate> {
 
     // 제목이나 내용이 비어있는지 확인
     if (state.title.trim().isEmpty || state.content.trim().isEmpty) {
-      OrmeeToast.show(context, '제목과 내용을 모두 입력해주세요.');
+      OrmeeToast.show(context, '제목과 내용을 모두 입력해주세요.', true);
       return;
     }
 
@@ -118,16 +116,16 @@ class _QuestionCreateState extends State<QuestionCreate> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => QuestionCreateBloc(
-        QuestionRepository(QuestionCreateRemoteDataSource(http.Client())),
+        QuestionRepository(QuestionCreateRemoteDataSource()),
         AttachmentRepository(),
       ),
       child: BlocListener<QuestionCreateBloc, QuestionCreateState>(
         listener: (context, state) {
           if (state.submitSuccess) {
-            OrmeeToast.show(context, '질문이 등록되었습니다.');
+            OrmeeToast.show(context, '질문이 등록되었습니다.', false);
             context.pop();
           } else if (state.error != null) {
-            OrmeeToast.show(context, state.error!);
+            OrmeeToast.show(context, state.error!, true);
           }
         },
         child: BlocBuilder<QuestionCreateBloc, QuestionCreateState>(

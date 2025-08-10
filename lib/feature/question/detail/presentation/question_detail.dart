@@ -29,7 +29,7 @@ class QuestionDetailScreen extends StatelessWidget {
       child: BlocConsumer<QuestionDetailBloc, QuestionDetailState>(
         listener: (context, state) {
           if (state is QuestionDetailError) {
-            OrmeeToast.show(context, state.message);
+            OrmeeToast.show(context, state.message, true);
             context.pop();
           }
         },

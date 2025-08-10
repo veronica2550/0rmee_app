@@ -81,17 +81,32 @@ class NotificationCard extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: () async {
-          if (type == "공지") {
-            bool isRead = await repository.readNotification(id);
-            if (isRead) {
-              // 읽음 성공 처리
-              onReadStatusChanged?.call();
-            }
-            if (context.mounted) {
-              context.push('/notice/detail/${parentId}');
-            }
+          // 읽음 처리
+          bool isRead = await repository.readNotification(id);
+          if (isRead) {
+            onReadStatusChanged?.call();
           }
-          // 과제, 질문은 상세 화면 제작된 후 연결
+
+          // type에 따라 라우팅
+          if (!context.mounted) return;
+
+          switch (type) {
+            case "공지":
+              context.push('/notice/detail/$parentId');
+              break;
+            case "퀴즈":
+              context.push('/quiz/detail/$parentId');
+              break;
+            case "숙제":
+              context.push('/homework/detail/$parentId');
+              break;
+            case "질문":
+              context.push('/question/detail/$parentId');
+              break;
+            default:
+            // 정의되지 않은 type에 대한 fallback 처리 (예: 에러 로그 or 무시)
+              break;
+          }
         },
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 10),

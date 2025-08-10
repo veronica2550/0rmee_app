@@ -10,6 +10,7 @@ import 'package:ormee_app/feature/lecture/home/presentation/widgets/appbar.dart'
 import 'package:ormee_app/feature/lecture/home/presentation/widgets/lecture_card.dart';
 import 'package:ormee_app/feature/lecture/home/presentation/widgets/lecture_enter_dialog.dart';
 import 'package:ormee_app/feature/lecture/home/presentation/widgets/lecture_home_empty.dart';
+import 'package:ormee_app/shared/widgets/toast.dart';
 
 class LectureHome extends StatelessWidget {
   const LectureHome({super.key});
@@ -47,9 +48,7 @@ class LectureHome extends StatelessWidget {
               context.read<LectureHomeBloc>().add(FetchLectures());
             });
           } else if (state is LectureHomeError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            OrmeeToast.show(context, state.message, true);
           }
         },
         builder: (context, state) {
