@@ -21,13 +21,13 @@ class OrmeeToast {
           color: Colors.transparent,
           child: Center(
             child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: maxWidth,
-              ),
+              constraints: BoxConstraints(maxWidth: maxWidth),
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                 decoration: BoxDecoration(
-                  color: isError ? OrmeeColor.systemRed : OrmeeColor.systemGreen,
+                  color: isError
+                      ? OrmeeColor.systemRed
+                      : OrmeeColor.systemGreen,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
@@ -35,11 +35,13 @@ class OrmeeToast {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SvgPicture.asset(
-                      isError ? 'assets/icons/alert.svg' : 'assets/icons/complete.svg',
+                      isError
+                          ? 'assets/icons/alert.svg'
+                          : 'assets/icons/complete.svg',
                     ),
                     SizedBox(width: 8),
                     Flexible(
-                      child: Headline1SemiBold18(
+                      child: Body2SemiBoldNormal14(
                         text: message,
                         color: OrmeeColor.gray[90],
                         overflow: TextOverflow.ellipsis,
