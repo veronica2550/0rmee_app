@@ -59,7 +59,7 @@ Widget QuizTab() {
             } else {
               stateText = '미제출';
             }
-            return GestureDetector(
+            return InkWell(
               onTap: () {
                 context.push('/quiz/detail/${quiz.quizId}');
               },
