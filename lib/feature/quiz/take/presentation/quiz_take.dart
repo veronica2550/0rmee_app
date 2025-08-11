@@ -11,12 +11,16 @@ import 'package:ormee_app/feature/quiz/widgets/time_over_dialog.dart';
 import 'package:ormee_app/shared/theme/app_colors.dart';
 import 'package:ormee_app/shared/theme/app_fonts.dart';
 import 'package:ormee_app/shared/widgets/appbar.dart' show OrmeeAppBar;
+import 'package:ormee_app/shared/widgets/bottomsheet.dart';
+import 'package:ormee_app/shared/widgets/toast.dart';
 
 class Quiz extends StatelessWidget {
   final QuizController controller = Get.put(QuizController());
 
   final int quizId;
   final String quizTitle;
+
+  final RxBool _timeUpHandled = false.obs;
 
   Quiz({super.key, required this.quizId, required this.quizTitle});
 
@@ -82,7 +86,16 @@ class Quiz extends StatelessWidget {
           buildTimeUpDialog(context),
         ],
       ),
-      bottomSheet: buildSubmitButton(context),
+      bottomSheet: Obx(() {
+        final loading = controller.isLoading.value;
+        final canSubmit = _allAnswered() && !loading;
+
+        return OrmeeBottomSheet(
+          text: loading ? '제출 중...' : '제출하기',
+          isCheck: canSubmit && !loading,
+          onTap: () async => _handleSubmitQuiz(context),
+        );
+      }),
     );
   }
 
@@ -156,7 +169,7 @@ class Quiz extends StatelessWidget {
     return Positioned(
       left: 0,
       right: 0,
-      bottom: 73,
+      bottom: 90,
       child: Obx(() {
         if (controller.remainingTime.value.isEmpty) {
           return SizedBox.shrink();
@@ -181,62 +194,46 @@ class Quiz extends StatelessWidget {
 
   Widget buildTimeUpDialog(BuildContext context) {
     return Obx(() {
-      if (controller.isTimeUp.value) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _handleTimeUp(context);
+      if (controller.isTimeUp.value && !_timeUpHandled.value) {
+        _timeUpHandled.value = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          await _handleTimeUp(context);
         });
       }
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     });
   }
 
   Future<void> _handleTimeUp(BuildContext context) async {
+    if (controller.isLoading.value) return;
+
     FocusScope.of(context).unfocus();
-    await controller.submitQuiz(quizId);
+
+    bool submitted = false;
+    try {
+      await controller.submitQuiz(quizId);
+      submitted = true;
+    } catch (e) {
+      _timeUpHandled.value = false;
+      OrmeeToast.show(context, '제출 중 오류가 발생했어요. 다시 시도할게요.', true);
+    }
 
     if (context.mounted) {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => customDialog(context),
-      );
-    }
-  }
-
-  Widget buildSubmitButton(BuildContext context) {
-    return Obx(() {
-      return GestureDetector(
-        onTap: () async {
-          await _handleSubmitQuiz(context);
-        },
-        child: Container(
-          width: double.maxFinite,
-          color: OrmeeColor.white,
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            height: 48,
-            decoration: BoxDecoration(
-              color: controller.isLoading.value
-                  ? OrmeeColor.gray[30]
-                  : OrmeeColor.purple[40],
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Center(
-              child: controller.isLoading.value
-                  ? SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        color: OrmeeColor.white,
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : Body1RegularNormal16(text: "제출하기", color: OrmeeColor.white),
-            ),
-          ),
+        builder: (context) => submitted
+            ? customDialog(context)
+            : TimeOverDialog(
+          onConfirm: () async {
+            GoRouter.of(context).routerDelegate.navigatorKey.currentState?.popUntil(
+                  (route) => route.settings.name == '/quiz/detail/$quizId',
+            );
+            GlobalEventBus().fire(QuizDetailRefreshEvent(quizId));
+          },
         ),
       );
-    });
+    }
   }
 
   // 선택형 문제의 현재 선택된 인덱스 반환
@@ -248,50 +245,46 @@ class Quiz extends StatelessWidget {
 
   // 퀴즈 제출 처리
   Future<void> _handleSubmitQuiz(BuildContext context) async {
+    // 중복 제출/타임업 가드
     if (controller.isLoading.value) return;
+    if (controller.isTimeUp.value) {
+      OrmeeToast.show(context, '시간이 종료되어 자동 제출을 진행 중이에요.', true);
+      return;
+    }
+    if (!_allAnswered()) {
+      OrmeeToast.show(context, '모든 문제에 응답해주세요.', true);
+      return;
+    }
 
-    // 모든 문제가 답변되었는지 확인
-    // final unansweredProblems = controller.problems.where((problem) {
-    //   final answer = controller.getAnswer(problem.id);
-    //   return answer == null || answer.isEmpty;
-    // }).toList();
+    final bool? confirmed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => SubmitConfirmDialog(
+        onConfirm: () {
+          Navigator.of(context).pop(true);
+        },
+      ),
+    );
 
-    // if (unansweredProblems.isNotEmpty) {
-    //   Get.snackbar(
-    //     '알림',
-    //     '모든 문제에 응답해주세요.',
-    //     snackPosition: SnackPosition.BOTTOM,
-    //     duration: const Duration(seconds: 2),
-    //   );
-    //   return;
-    // }
+    if (confirmed != true) return;
+
+    FocusScope.of(context).unfocus();
 
     try {
-      // 제출 확인 다이얼로그 표시
-      final bool? confirmed = await showDialog<bool>(
-        context: context,
-        builder: (context) => SubmitConfirmDialog(
-          onConfirm: () async {
-            Navigator.of(context).pop(true); // true를 반환하여 확인됨을 알림
-            await controller.submitQuiz(quizId);
-          },
-        ),
-      );
-
-      // 클래스 코드 페이지로 돌아가기
-      if (confirmed == true) {
-        // Navigator.of(context).popUntil((route) {
-        //   return route.settings.name?.startsWith('/quiz/detail/${quizId}') ??
-        //       false;
-        // });
-        GoRouter.of(context).routerDelegate.navigatorKey.currentState?.popUntil(
-          (route) => route.settings.name == '/quiz/detail/$quizId',
-        );
-        GlobalEventBus().fire(QuizDetailRefreshEvent(quizId));
-      }
+      await controller.submitQuiz(quizId);
     } catch (e) {
-      // 에러는 controller에서 이미 처리되므로 여기서는 추가 처리 불필요
+      OrmeeToast.show(context, '제출 중 오류가 발생했어요. 다시 시도해 주세요.', true);
+      return;
     }
+
+    if (!context.mounted) return;
+
+    OrmeeToast.show(context, '퀴즈 응시 완료', false);
+    // 상세로 복귀 + 새로고침 이벤트
+    GoRouter.of(context).routerDelegate.navigatorKey.currentState?.popUntil(
+          (route) => route.settings.name == '/quiz/detail/$quizId',
+    );
+    GlobalEventBus().fire(QuizDetailRefreshEvent(quizId));
   }
 
   Widget customDialog(BuildContext context) {
@@ -303,5 +296,14 @@ class Quiz extends StatelessWidget {
         GlobalEventBus().fire(QuizDetailRefreshEvent(quizId));
       },
     );
+  }
+
+  bool _allAnswered() {
+    for (final p in controller.problems) {
+      final a = controller.getAnswer(p.id);
+      if (a == null) return false;
+      if (a is String && a.trim().isEmpty) return false;
+    }
+    return true;
   }
 }

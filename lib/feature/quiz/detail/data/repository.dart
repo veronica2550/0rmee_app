@@ -151,16 +151,12 @@ class QuizUtils {
     if (duration.isNegative) return '마감됨';
 
     final days = duration.inDays;
-    final hours = duration.inHours % 24;
-    final minutes = duration.inMinutes % 60;
 
-    if (days > 0) {
-      return '${days}일 ${hours}시간 ${minutes}분';
-    } else if (hours > 0) {
-      return '${hours}시간 ${minutes}분';
-    } else {
-      return '${minutes}분';
+    if(days == 0) {
+      return 'D-day';
     }
+
+    return 'D-$days';
   }
 
   /// 시간 제한 포맷팅

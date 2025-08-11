@@ -75,8 +75,7 @@ class _NoticeCardState extends State<NoticeCard> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
+    return InkWell(
       onTap: _handleTap,
       child: Container(
         width: double.infinity,

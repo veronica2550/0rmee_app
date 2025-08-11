@@ -40,7 +40,7 @@ class QuizResultView extends StatelessWidget {
       child: BlocBuilder<QuizBloc, QuizState>(
         builder: (context, state) {
           return Scaffold(
-            backgroundColor: OrmeeColor.gray[20],
+            backgroundColor: OrmeeColor.gray[10],
             appBar: OrmeeAppBar(
               isLecture: false,
               isImage: false,
