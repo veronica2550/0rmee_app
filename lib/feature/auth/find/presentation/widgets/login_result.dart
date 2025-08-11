@@ -6,12 +6,15 @@ import 'package:ormee_app/shared/widgets/appbar.dart';
 import 'package:ormee_app/shared/widgets/bottomsheet.dart';
 
 class LoginResult extends StatelessWidget {
-  const LoginResult({super.key});
+  final String name;
+  final String foundId;
+
+  const LoginResult({super.key, required this.name, required this.foundId});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: OrmeeAppBar(
+      appBar: const OrmeeAppBar(
         isLecture: false,
         isImage: false,
         isDetail: false,
@@ -23,16 +26,13 @@ class LoginResult extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Heading2SemiBold20(text: "강수이님의 아이디는"),
-            SizedBox(height: 13),
+            Heading2SemiBold20(text: "$name님의 아이디는"),
+            const SizedBox(height: 13),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Heading2SemiBold20(
-                  text: "orme****",
-                  color: OrmeeColor.purple[50],
-                ),
-                Heading2SemiBold20(text: " 입니다."),
+                Heading2SemiBold20(text: foundId, color: OrmeeColor.purple[50]),
+                const Heading2SemiBold20(text: " 입니다."),
               ],
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.2),

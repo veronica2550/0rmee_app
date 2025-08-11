@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ormee_app/feature/auth/find/data/id/model.dart';
 import 'package:ormee_app/feature/auth/find/presentation/find.dart';
 import 'package:ormee_app/feature/auth/find/presentation/widgets/login_result.dart';
 import 'package:ormee_app/feature/auth/login/presentation/pages/login.dart';
@@ -60,7 +61,12 @@ class AppRouter {
       GoRoute(
         path: '/find/login',
         name: 'find login',
-        builder: (context, state) => const LoginResult(),
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          final name = extra['name'] as String;
+          final foundId = extra['foundId'] as String;
+          return LoginResult(name: name, foundId: foundId);
+        },
       ),
       GoRoute(
         path: '/branch',
