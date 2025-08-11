@@ -22,22 +22,25 @@ class OrmeeIconBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 48),
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
       decoration: BoxDecoration(
         color: OrmeeColor.white,
         border: Border(top: BorderSide(color: OrmeeColor.gray[10]!, width: 1)),
       ),
-      child: GestureDetector(
-        onTap: ontTap,
-        child: Row(
-          children: [
-            SvgPicture.asset(icon),
-            const SizedBox(width: 4),
-            Headline2SemiBold16(
-              text: text,
-              color: isLike ? OrmeeColor.gray[60] : OrmeeColor.purple[50],
-            ),
-          ],
+      child: SizedBox(
+        height: 48,
+        child: GestureDetector(
+          onTap: ontTap,
+          child: Row(
+            children: [
+              SvgPicture.asset(icon),
+              const SizedBox(width: 4),
+              Headline2SemiBold16(
+                text: text,
+                color: isLike ? OrmeeColor.gray[60] : OrmeeColor.purple[50],
+              ),
+            ],
+          ),
         ),
       ),
     );

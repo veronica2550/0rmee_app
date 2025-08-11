@@ -7,11 +7,14 @@ class OrmeeBottomSheet extends StatelessWidget {
   final bool isCheck;
   final VoidCallback? onTap;
 
+  final String? dDay;
+
   const OrmeeBottomSheet({
     super.key,
     required this.text,
     required this.isCheck,
     this.onTap,
+    this.dDay,
   });
 
   @override
@@ -22,7 +25,7 @@ class OrmeeBottomSheet extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 8, 20, 39),
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
       decoration: BoxDecoration(
         color: OrmeeColor.white,
         border: Border(top: BorderSide(color: OrmeeColor.gray[10]!, width: 1)),
@@ -41,11 +44,38 @@ class OrmeeBottomSheet extends StatelessWidget {
               color: activeColor,
             ),
             child: Center(
-              child: Headline2SemiBold16(text: text, color: textColor),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Headline2SemiBold16(text: text, color: textColor),
+                  if (dDay != null) ...[
+                    const SizedBox(width: 8),
+                    _DDayBadge(text: dDay!, textColor: textColor!),
+                  ],
+                ],
+              ),
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _DDayBadge extends StatelessWidget {
+  final String text;
+  final Color textColor;
+  const _DDayBadge({required this.text, required this.textColor});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: OrmeeColor.purple[60],
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Label2Semibold12(text: text, color: textColor),
     );
   }
 }

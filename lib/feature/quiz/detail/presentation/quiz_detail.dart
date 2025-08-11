@@ -12,7 +12,7 @@ import 'package:ormee_app/feature/quiz/detail/data/model.dart';
 import 'package:ormee_app/shared/theme/app_colors.dart';
 import 'package:ormee_app/shared/theme/app_fonts.dart';
 import 'package:ormee_app/shared/widgets/appbar.dart';
-import 'package:ormee_app/shared/widgets/button.dart';
+import 'package:ormee_app/shared/widgets/bottomsheet.dart';
 import 'package:ormee_app/shared/widgets/label.dart';
 import 'package:ormee_app/shared/widgets/profile.dart';
 import 'package:ormee_app/feature/quiz/detail/data/repository.dart';
@@ -76,37 +76,82 @@ class QuizDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: OrmeeAppBar(
-          isLecture: false,
-          isImage: false,
-          isDetail: true,
-          isPosting: false,
-          title: "퀴즈",
-        ),
-        body: BlocConsumer<QuizBloc, QuizState>(
-          listener: (context, state) {
-            if (state is QuizError) {
-              OrmeeToast.show(context, state.message, true);
-            }
-          },
-          builder: (context, state) {
-            if (state is QuizLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
+    return Scaffold(
+      appBar: OrmeeAppBar(
+        isLecture: false,
+        isImage: false,
+        isDetail: true,
+        isPosting: false,
+        title: "퀴즈",
+      ),
+      body: BlocConsumer<QuizBloc, QuizState>(
+        listener: (context, state) {
+          if (state is QuizError) {
+            OrmeeToast.show(context, state.message, true);
+          }
+        },
+        builder: (context, state) {
+          if (state is QuizLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            if (state is QuizLoaded) {
-              return _buildQuizContent(context, state);
-            }
+          if (state is QuizLoaded) {
+            return _buildQuizContent(context, state);
+          }
 
-            if (state is QuizError) {
-              return _buildErrorContent(context, state);
-            }
+          if (state is QuizError) {
+            return _buildErrorContent(context, state);
+          }
 
-            return const SizedBox.shrink();
-          },
-        ),
+          return const SizedBox.shrink();
+        },
+      ),
+      bottomSheet: BlocBuilder<QuizBloc, QuizState>(
+        builder: (context, state) {
+          if (state is! QuizLoaded) return const SizedBox.shrink();
+
+          final status = state.status;
+          final title = state.detail.title;
+
+          switch (status) {
+            case QuizStatus.inProgress:
+              final remaining = QuizUtils.formatRemainingTime(
+                state.detail.dueDateTime.difference(DateTime.now()),
+              );
+              return OrmeeBottomSheet(
+                text: '퀴즈 응시하기',
+                isCheck: true,
+                dDay: remaining,
+                onTap: () async {
+                  final ok = await ApiClient.instance.reissueToken();
+                  if (ok) {
+                    context.push('/quiz/take/$quizId?title=$title');
+                  } else {
+                    OrmeeToast.show(context, '토큰 재발급 실패', true);
+                  }
+                },
+              );
+
+            case QuizStatus.submitted:
+              return OrmeeBottomSheet(
+                text: '정답 확인하기',
+                isCheck: true,
+                onTap: () => context.push('/quiz/result/$quizId?title=$title'),
+              );
+
+            case QuizStatus.notStarted:
+              return OrmeeBottomSheet(
+                text: '열리지 않은 퀴즈예요',
+                isCheck: false,
+              );
+
+            case QuizStatus.expired:
+              return OrmeeBottomSheet(
+                text: '응시하지 않은 퀴즈예요',
+                isCheck: false,
+              );
+          }
+        },
       ),
     );
   }
@@ -206,18 +251,7 @@ class QuizDetailView extends StatelessWidget {
           const SizedBox(height: 24),
 
           // 퀴즈 정보 요약
-          _buildQuizSummary(take),
-
-          const Spacer(),
-
-          // 액션 버튼
-          _buildActionButtons(
-            context,
-            state,
-            _createDDay(detail.openDateTime, detail.dueDateTime),
-            quizId,
-            detail.title,
-          ),
+          _buildQuizSummary(take)
         ],
       ),
     );
@@ -309,137 +343,6 @@ class QuizDetailView extends StatelessWidget {
           ],
         ],
       ),
-    );
-  }
-
-  Widget _buildActionButtons(
-    BuildContext context,
-    QuizLoaded state,
-    dday,
-    quizId,
-    title,
-  ) {
-    return Column(
-      children: [
-        if (state.status == QuizStatus.inProgress) ...[
-          SizedBox(
-            width: double.infinity,
-            height: 48,
-            child: OrmeeButton(
-              text: '퀴즈 응시하기',
-              isTrue: true,
-              trueAction: () async {
-                final success = await ApiClient.instance.reissueToken();
-                if (success) {
-                  context.push('/quiz/take/$quizId?title=$title');
-                } else {
-                  // 재발급 실패 처리 (예: 에러 메시지, 로그아웃 등)
-                  print('토큰 재발급 실패!');
-                }
-              },
-              dday: dday,
-            ),
-            // ElevatedButton(
-            //   onPressed: () => _navigateToQuizTake(context, state),
-            //   style: ElevatedButton.styleFrom(
-            //     backgroundColor: Colors.blue[600],
-            //     shape: RoundedRectangleBorder(
-            //       borderRadius: BorderRadius.circular(8),
-            //     ),
-            //   ),
-            //   child: const Text(
-            //     "퀴즈 시작하기",
-            //     style: TextStyle(
-            //       color: Colors.white,
-            //       fontSize: 16,
-            //       fontWeight: FontWeight.w600,
-            //     ),
-            //   ),
-            // ),
-          ),
-        ],
-
-        if (state.status == QuizStatus.submitted) ...[
-          SizedBox(
-            width: double.infinity,
-            height: 48,
-            child: OrmeeButton(
-              text: '정답 확인하기',
-              isTrue: true,
-              trueAction: () {
-                print("title: $title");
-                context.push('/quiz/result/$quizId?title=$title');
-              },
-            ),
-            // ElevatedButton(
-            //   onPressed: () => _navigateToQuizResult(context, state),
-            //   style: ElevatedButton.styleFrom(
-            //     backgroundColor: Colors.green[600],
-            //     shape: RoundedRectangleBorder(
-            //       borderRadius: BorderRadius.circular(8),
-            //     ),
-            //   ),
-            //   child: const Text(
-            //     "정답 확인하기",
-            //     style: TextStyle(
-            //       color: Colors.white,
-            //       fontSize: 16,
-            //       fontWeight: FontWeight.w600,
-            //     ),
-            //   ),
-            // ),
-          ),
-        ],
-
-        if (state.status == QuizStatus.notStarted) ...[
-          SizedBox(
-            width: double.infinity,
-            height: 48,
-            child: ElevatedButton(
-              onPressed: null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[300],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text(
-                "퀴즈 시작까지 ${QuizUtils.formatRemainingTime(state.detail.openDateTime.difference(DateTime.now()))}",
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-        ],
-
-        if (state.status == QuizStatus.expired) ...[
-          SizedBox(
-            width: double.infinity,
-            height: 48,
-            child: ElevatedButton(
-              onPressed: () =>
-                  context.push('/quiz/result/$quizId?title=$title'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[30],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text(
-                "응시하지 않은 퀴즈예요",
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ],
     );
   }
 
