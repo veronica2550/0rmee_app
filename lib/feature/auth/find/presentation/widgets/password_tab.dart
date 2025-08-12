@@ -9,15 +9,16 @@ class PasswordTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: const Center(
         child: Body2SemiBoldNormal14(text: "비밀번호를 찾으려면 본인인증이 필요해요."),
       ),
       bottomSheet: OrmeeBottomSheet(
         text: "본인인증 하기",
         isCheck: true,
+        // 추후 본인인증 연결
         onTap: () => context.push(
           '/find/password',
-          extra: {'username': "김다라", 'phoneNumber': "010-4444-4444"},
+          extra: {'username': "student3", 'phoneNumber': "010-4444-4444"},
         ),
       ),
     );
