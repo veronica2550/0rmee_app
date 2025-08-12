@@ -41,6 +41,6 @@ Future<void> downloadFile({
   } catch (e, stack) {
     debugPrint("❌ 다운로드 실패: $e");
     debugPrint("StackTrace: $stack");
-    OrmeeToast.show(context, "파일을 저장 실패. 다시 시도해 주세요.", true);
+    OrmeeToast.show(context, "파일 저장 실패. 다시 시도해 주세요.", true);
   }
 }

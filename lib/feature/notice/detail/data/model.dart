@@ -1,6 +1,5 @@
 import 'package:ormee_app/core/model/author.dart';
 import 'package:ormee_app/core/model/file_attachment.dart';
-import 'package:ormee_app/shared/utils/file_utils.dart';
 
 class NoticeDetailModel {
   final String title;
@@ -25,6 +24,7 @@ class NoticeDetailModel {
   factory NoticeDetailModel.fromJson(Map<String, dynamic> json) {
     final List<dynamic> fileNames = json['data']['fileNames'] ?? [];
     final List<dynamic> filePaths = json['data']['filePaths'] ?? [];
+    final List<dynamic> fileTypes = json['data']['fileTypes'] ?? [];
 
     List<String> images = [];
     List<AttachmentFile> files = [];
@@ -32,8 +32,9 @@ class NoticeDetailModel {
     for (int i = 0; i < filePaths.length; i++) {
       final url = filePaths[i] as String;
       final name = fileNames.length > i ? fileNames[i] as String : '파일';
+      final type = fileTypes.length > i ? fileTypes[i] as String : '';
 
-      if (FileUtil.isImageFile(url)) {
+      if (type.endsWith('_IMAGE')) {
         images.add(url);
       } else {
         files.add(AttachmentFile(name: name, url: url));
