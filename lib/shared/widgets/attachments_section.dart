@@ -9,6 +9,20 @@ class AttachmentsSection extends StatelessWidget {
 
   const AttachmentsSection({super.key, required this.attachmentFiles});
 
+  String _safeDecodeName(String s) {
+    if (s.isEmpty) return s;
+    if (!s.contains('%')) return s;
+    try {
+      return Uri.decodeComponent(s);
+    } catch (_) {
+      try {
+        return Uri.decodeFull(s);
+      } catch (_) {
+        return s;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,7 +42,8 @@ class AttachmentsSection extends StatelessWidget {
               spacing: 5,
               runSpacing: 5,
               children: attachmentFiles.map((file) {
-                return Downloader(fileName: file.name, url: file.url);
+                print(file.url);
+                return Downloader(fileName: _safeDecodeName(file.name), url: file.url);
               }).toList(),
             ),
           ),
