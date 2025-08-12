@@ -132,9 +132,12 @@ class _LoginState extends State<Login> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Label2Regular12(
-                                  text: "아이디/비밀번호 찾기",
-                                  color: OrmeeColor.gray[60],
+                                GestureDetector(
+                                  onTap: () => context.push('/find'),
+                                  child: Label2Regular12(
+                                    text: "아이디/비밀번호 찾기",
+                                    color: OrmeeColor.gray[60],
+                                  ),
                                 ),
                                 const SizedBox(width: 12),
                                 SvgPicture.asset(

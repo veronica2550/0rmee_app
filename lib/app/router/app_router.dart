@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
+import 'package:ormee_app/feature/auth/find/bloc/pw/pw_bloc.dart';
+import 'package:ormee_app/feature/auth/find/data/id/model.dart';
+import 'package:ormee_app/feature/auth/find/data/pw/remote_datasource.dart';
+import 'package:ormee_app/feature/auth/find/data/pw/repository.dart';
+import 'package:ormee_app/feature/auth/find/presentation/find.dart';
+import 'package:ormee_app/feature/auth/find/presentation/widgets/login_result.dart';
+import 'package:ormee_app/feature/auth/find/presentation/widgets/password_result.dart';
 import 'package:ormee_app/feature/auth/login/presentation/pages/login.dart';
 import 'package:ormee_app/feature/auth/signup/presentation/pages/congratulation.dart';
 import 'package:ormee_app/feature/homework/detail/feedback/detail/presentation/pages/feedback_detail.dart';
@@ -49,6 +57,41 @@ class AppRouter {
         path: '/login',
         name: 'login',
         builder: (context, state) => const Login(),
+      ),
+      GoRoute(
+        path: '/find',
+        name: 'find',
+        builder: (context, state) => const Find(),
+      ),
+      GoRoute(
+        path: '/find/login',
+        name: 'find login',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          final name = extra['name'] as String;
+          final foundId = extra['foundId'] as String;
+          return LoginResult(name: name, foundId: foundId);
+        },
+      ),
+      GoRoute(
+        path: '/find/password',
+        name: 'find password',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          final username = extra['username'] as String;
+          final phoneNumber = extra['phoneNumber'] as String;
+          return BlocProvider(
+            create: (context) => FindPasswordBloc(
+              repository: FindPasswordRepository(
+                FindPasswordRemoteDataSource(http.Client()),
+              ),
+            ),
+            child: PasswordChangeScreen(
+              username: username,
+              phoneNumber: phoneNumber,
+            ),
+          );
+        },
       ),
       GoRoute(
         path: '/branch',
