@@ -16,7 +16,7 @@ class FindPasswordRemoteDataSource {
     );
 
     if (response.statusCode != 200) {
-      throw '비밀번호 변경에 실패했습니다. 다시 시도해주세요.';
+      throw '비밀번호 변경에 실패했어요.';
     }
   }
 }

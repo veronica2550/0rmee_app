@@ -18,7 +18,7 @@ class LectureRemoteDataSource {
       final data = response.data['data'];
       return LectureModel.fromJson(data);
     } else {
-      throw Exception('강의 정보를 불러오지 못했습니다.');
+      throw '강의 정보를 불러오지 못했어요.';
     }
   }
 }

@@ -17,7 +17,7 @@ class LectureHomeRemoteDataSource {
       final List data = response.data['data'];
       return data.map((e) => LectureHome.fromJson(e)).toList();
     } else {
-      throw Exception('강의 목록을 불러오지 못했습니다.');
+      throw '강의 목록을 불러오지 못했어요.';
     }
   }
 
@@ -25,7 +25,7 @@ class LectureHomeRemoteDataSource {
     final response = await _dio.delete('/students/lectures/$lectureId');
 
     if (response.statusCode != 200) {
-      throw Exception('강의실 퇴장 실패');
+      throw '강의실 퇴장에 실패했어요.';
     }
   }
 
@@ -33,7 +33,7 @@ class LectureHomeRemoteDataSource {
     final response = await _dio.post('/students/lectures/$lectureId');
 
     if (response.statusCode != 200) {
-      throw Exception('강의실 입장 실패');
+      throw '강의실 입장에 실패했어요.';
     }
   }
 
@@ -44,7 +44,7 @@ class LectureHomeRemoteDataSource {
       final data = response.data['data'];
       return LectureHome.fromJson(data);
     } else {
-      throw Exception('강의 정보를 불러오지 못했습니다.');
+      throw '강의 정보를 불러오지 못했어요.';
     }
   }
 }

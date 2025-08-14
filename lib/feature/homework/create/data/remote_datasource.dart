@@ -15,10 +15,10 @@ class HomeworkCreateRemoteDataSource {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return;
       } else {
-        throw Exception('숙제를 등록할 수 없습니다.');
+        throw '숙제를 등록할 수 없어요.';
       }
     } catch (e) {
-      throw Exception('숙제 등록 중 오류가 발생했습니다.');
+      throw '숙제 등록 중 오류가 발생했어요.';
     }
   }
 }

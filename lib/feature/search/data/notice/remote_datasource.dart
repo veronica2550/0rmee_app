@@ -44,7 +44,7 @@ class NoticeRemoteDataSourceImpl implements NoticeRemoteDataSource {
         throw Exception('HTTP 에러: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('공지사항 검색 실패: $e');
+      throw '공지사항 검색에 실패했어요.';
     }
   }
 
@@ -59,7 +59,7 @@ class NoticeRemoteDataSourceImpl implements NoticeRemoteDataSource {
           .toList()
         ..sort((a, b) => b.searchDate.compareTo(a.searchDate)); // 최신순 정렬
     } catch (e) {
-      throw Exception('검색 기록 불러오기 실패: $e');
+      throw '검색 기록을 불러오지 못했어요.';
     }
   }
 
@@ -91,7 +91,7 @@ class NoticeRemoteDataSourceImpl implements NoticeRemoteDataSource {
 
       await prefs.setStringList(searchHistoryKey, historyJson);
     } catch (e) {
-      throw Exception('검색 기록 저장 실패: $e');
+      throw '검색 기록 저장을 실패했어요.';
     }
   }
 
@@ -108,7 +108,7 @@ class NoticeRemoteDataSourceImpl implements NoticeRemoteDataSource {
 
       await prefs.setStringList(searchHistoryKey, historyJson);
     } catch (e) {
-      throw Exception('검색 기록 삭제 실패: $e');
+      throw '검색 기록 삭제를 실패했어요.';
     }
   }
 
@@ -118,7 +118,7 @@ class NoticeRemoteDataSourceImpl implements NoticeRemoteDataSource {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(searchHistoryKey);
     } catch (e) {
-      throw Exception('전체 검색 기록 삭제 실패: $e');
+      throw '전체 검색 기록 삭제를 실패했어요.';
     }
   }
 }

@@ -24,9 +24,7 @@ class ApiService {
     } else if (response.statusCode == 409) {
       return false;
     } else {
-      throw Exception(
-        'Failed to check ID duplication. Code: ${response.statusCode}',
-      );
+      throw '아이디 중복 검사에 실패했어요.';
     }
   }
 
@@ -82,7 +80,7 @@ class ApiService {
       final errorData = jsonDecode(response.body);
       final errorMessage = errorData['data'];
       print(errorMessage);
-      throw Exception('회원가입에 실패했습니다. (코드: ${response.statusCode})');
+      throw '회원가입에 실패했어요.';
     }
   }
 }

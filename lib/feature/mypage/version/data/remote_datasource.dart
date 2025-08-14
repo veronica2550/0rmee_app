@@ -13,10 +13,10 @@ class VersionRemoteDataSource {
       if (responseData.status == 'success') {
         return responseData.data;
       } else {
-        throw Exception('버전 정보를 불러오지 못했습니다.');
+        throw '버전 정보를 불러오지 못했어요.';
       }
     } else {
-      throw Exception('버전 정보를 불러오지 못했습니다.');
+      throw '버전 정보를 불러오지 못했어요.';
     }
   }
 }

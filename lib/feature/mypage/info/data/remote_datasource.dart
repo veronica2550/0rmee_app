@@ -12,10 +12,10 @@ class StudentInfoRemoteDataSource {
       if (response.statusCode == 200 && response.data != null) {
         return StudentInfoModel.fromJson(response.data);
       } else {
-        throw Exception('학생 데이터를 불러올 수 없습니다.');
+        throw '학생 데이터를 불러올 수 없어요.';
       }
     } catch (e) {
-      throw Exception('학생 데이터를 불러오는 중 오류가 발생했습니다.');
+      throw '학생 데이터를 불러오는 중 오류가 발생했어요.';
     }
   }
 
@@ -26,16 +26,19 @@ class StudentInfoRemoteDataSource {
       if (response.statusCode == 200 && response.data != null) {
         return StudentInfoModel.fromJson(response.data);
       } else {
-        throw Exception('학생 데이터를 수정할 수 없습니다.');
+        throw '학생 데이터를 수정할 수 없어요.';
       }
     } catch (e) {
-      throw Exception('학생 데이터를 수정하는 중 오류가 발생했습니다.');
+      throw '학생 데이터를 수정하는 중 오류가 발생했어요.';
     }
   }
 
   Future<bool> verifyPassword(String password) async {
     try {
-      final response = await _dio.post('/students/password', data: {"password": password});
+      final response = await _dio.post(
+        '/students/password',
+        data: {"password": password},
+      );
 
       if (response.statusCode == 200) {
         return true;

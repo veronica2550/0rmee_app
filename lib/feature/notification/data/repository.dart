@@ -36,7 +36,7 @@ class NotificationRepository {
       if (res.statusCode == 200 && res.data != null) {
         return NotificationResponse.fromJson(res.data);
       } else {
-        throw Exception('Failed to load notifications: ${res.statusCode}');
+        throw '알림을 가져오는데 실패했어요.';
       }
     } on DioException catch (e) {
       print('DioException: ${e.message}');
@@ -55,7 +55,7 @@ class NotificationRepository {
       if (res.statusCode == 200 || res.statusCode == 204) {
         return true;
       } else {
-        throw Exception('Failed to delete notification: ${res.statusCode}');
+        throw '알림 삭제에 실패했어요.';
       }
     } on DioException catch (e) {
       print('DioException: ${e.message}');
@@ -74,7 +74,7 @@ class NotificationRepository {
       if (res.statusCode == 200 || res.statusCode == 204) {
         return true;
       } else {
-        throw Exception('Failed to read notification: ${res.statusCode}');
+        throw '알림 읽기에 실패했어요.';
       }
     } on DioException catch (e) {
       print('DioException: ${e.message}');
