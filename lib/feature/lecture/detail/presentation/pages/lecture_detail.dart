@@ -280,34 +280,11 @@ class _LectureDetailScreenState extends State<LectureDetailScreen>
                                         HomeworkState
                                       >(
                                         builder: (context, homeworkState) {
-                                          final noticeCount =
-                                              noticeState is NoticeLoaded
-                                              ? noticeState.notices.length
-                                              : null;
-                                          final quizCount =
-                                              quizState is QuizLoaded
-                                              ? quizState.quizzes.length
-                                              : null;
-                                          final homeworkCount =
-                                              homeworkState is HomeworkLoaded
-                                              ? homeworkState.homeworks.length
-                                              : null;
-
                                           return OrmeeTabBar(
                                             tabs: [
-                                              OrmeeTab(
-                                                text: '공지',
-                                                notificationCount: noticeCount,
-                                              ),
-                                              OrmeeTab(
-                                                text: '퀴즈',
-                                                notificationCount: quizCount,
-                                              ),
-                                              OrmeeTab(
-                                                text: '숙제',
-                                                notificationCount:
-                                                    homeworkCount,
-                                              ),
+                                              OrmeeTab(text: '공지'),
+                                              OrmeeTab(text: '퀴즈'),
+                                              OrmeeTab(text: '숙제'),
                                             ],
                                           );
                                         },
