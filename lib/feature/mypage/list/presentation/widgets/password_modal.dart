@@ -10,11 +10,13 @@ class PasswordModal extends StatefulWidget {
   final String titleText;
   final String? icon;
   final void Function(String password) onConfirm;
+  final ValueNotifier<bool> submitting;
 
   const PasswordModal({
     super.key,
     required this.titleText,
     required this.onConfirm,
+    required this.submitting,
     this.icon,
   });
 
@@ -27,6 +29,14 @@ class _PasswordModalState extends State<PasswordModal> {
   final FocusNode _focusNode = FocusNode();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _focusNode.requestFocus();
+    });
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     _focusNode.dispose();
@@ -34,12 +44,13 @@ class _PasswordModalState extends State<PasswordModal> {
   }
 
   void _handleConfirm() {
-    if (_controller.text.isEmpty) {
+    final pw = _controller.text.trim();
+    if (pw.isEmpty) {
       OrmeeToast.show(context, '비밀번호를 입력하세요.', true);
       return;
     }
-    widget.onConfirm(_controller.text);
-    context.pop();
+    widget.submitting.value = true;
+    widget.onConfirm(pw);
   }
 
   @override
@@ -49,49 +60,48 @@ class _PasswordModalState extends State<PasswordModal> {
       backgroundColor: OrmeeColor.white,
       surfaceTintColor: Colors.transparent,
       title: Center(
-        child: Heading2SemiBold20(
-          text: widget.titleText,
-          color: OrmeeColor.gray[90],
-        ),
+        child: Heading2SemiBold20(text: widget.titleText, color: OrmeeColor.gray[90]),
       ),
-      content: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.9,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            OrmeeTextField(
-              hintText: '비밀번호 입력',
-              controller: _controller,
-              textInputAction: TextInputAction.done,
-              onFieldSubmitted: (_) => _handleConfirm(),
-              focusNode: _focusNode,
-              isPassword: true,
-            ),
-            const SizedBox(height: 28),
-            Row(
+      content: ValueListenableBuilder<bool>(
+        valueListenable: widget.submitting,
+        builder: (context, isSubmitting, _) {
+          return SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: OrmeeButton(
-                    text: '취소',
-                    isTrue: false,
-                    falseAction: () {
-                      context.pop();
-                      context.pop();
-                    },
-                  ),
+                OrmeeTextField(
+                  hintText: '비밀번호 입력',
+                  controller: _controller,
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (_) => _handleConfirm(),
+                  focusNode: _focusNode,
+                  isPassword: true,
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OrmeeButton(
-                    text: '확인',
-                    isTrue: true,
-                    trueAction: _handleConfirm,
-                  ),
+                const SizedBox(height: 28),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OrmeeButton(
+                        text: '취소',
+                        isTrue: false,
+                        falseAction: isSubmitting ? null : () => context.pop(false),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: OrmeeButton(
+                        text: '확인',
+                        isTrue: true,
+                        trueAction: isSubmitting ? null : _handleConfirm,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

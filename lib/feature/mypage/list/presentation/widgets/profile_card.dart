@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:ormee_app/shared/theme/app_colors.dart';
 import 'package:ormee_app/shared/theme/app_fonts.dart';
 import 'package:ormee_app/shared/widgets/profile.dart';
 
 class ProfileCard extends StatelessWidget {
   final String name;
+  final VoidCallback? onTap;
 
-  const ProfileCard({super.key, required this.name});
+  const ProfileCard({
+    super.key,
+    required this.name,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        context.push('/mypage/info');
-      },
+      onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: OrmeeColor.gray[10],
           borderRadius: BorderRadius.circular(20),
@@ -27,8 +29,8 @@ class ProfileCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Profile(size1: 24),
-                SizedBox(width: 12),
+                const Profile(size1: 24),
+                const SizedBox(width: 12),
                 Headline1SemiBold18(text: name, color: OrmeeColor.gray[800]),
               ],
             ),

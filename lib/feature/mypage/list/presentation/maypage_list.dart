@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ormee_app/core/network/api_client.dart';
+import 'package:ormee_app/feature/mypage/info/bloc/student_info_bloc.dart';
+import 'package:ormee_app/feature/mypage/info/bloc/student_info_event.dart';
+import 'package:ormee_app/feature/mypage/info/bloc/student_info_state.dart';
+import 'package:ormee_app/feature/mypage/info/data/remote_datasource.dart';
+import 'package:ormee_app/feature/mypage/info/data/repository.dart';
 import 'package:ormee_app/feature/mypage/list/bloc/mypage_list_bloc.dart';
 import 'package:ormee_app/feature/mypage/list/bloc/mypage_list_event.dart';
 import 'package:ormee_app/feature/mypage/list/bloc/mypage_list_state.dart';
@@ -9,6 +14,7 @@ import 'package:ormee_app/feature/mypage/list/data/repository.dart';
 import 'package:ormee_app/feature/mypage/list/data/remote_datasource.dart';
 import 'package:ormee_app/feature/mypage/list/presentation/widgets/appbar.dart';
 import 'package:ormee_app/feature/mypage/list/presentation/widgets/mypage_card.dart';
+import 'package:ormee_app/feature/mypage/list/presentation/widgets/password_modal.dart';
 import 'package:ormee_app/feature/mypage/list/presentation/widgets/profile_card.dart';
 import 'package:ormee_app/shared/theme/app_colors.dart';
 import 'package:ormee_app/shared/widgets/dialog.dart';
@@ -39,7 +45,51 @@ class MyPageScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
-                    ProfileCard(name: name),
+                  ProfileCard(
+                  name: name,
+                  onTap: () async {
+                    final submitting = ValueNotifier<bool>(false); // ← 추가
+
+                    final verified = await showDialog<bool>(
+                      context: context,
+                      barrierDismissible: false,
+                      useRootNavigator: true,
+                      builder: (dialogContext) {
+                        return BlocProvider(
+                          create: (_) => StudentInfoBloc(
+                            StudentInfoRepository(StudentInfoRemoteDataSource()),
+                          ),
+                          child: BlocConsumer<StudentInfoBloc, StudentInfoState>(
+                            listener: (ctx, state) {
+                              if (state is PasswordVerified) {
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  Navigator.of(dialogContext, rootNavigator: true).pop(true);
+                                });
+                              } else if (state is PasswordVerifyFailed) {
+                                submitting.value = false;
+                                OrmeeToast.show(dialogContext, state.message, true);
+                              }
+                            },
+                            builder: (ctx, state) {
+                              return PasswordModal(
+                                titleText: "회원정보 수정",
+                                submitting: submitting,
+                                onConfirm: (pw) =>
+                                    ctx.read<StudentInfoBloc>().add(VerifyPassword(pw)),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    );
+
+                    if (verified == true && context.mounted) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (context.mounted) GoRouter.of(context).push('/mypage/info');
+                      });
+                    }
+                  },
+                ),
                     SizedBox(height: 10),
                     MyPageCard(
                       icon: 'assets/icons/list.svg',
