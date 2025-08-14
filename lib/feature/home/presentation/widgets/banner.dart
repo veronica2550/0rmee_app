@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:ormee_app/feature/home/data/models/banner.dart';
 import 'package:ormee_app/shared/theme/app_colors.dart';
@@ -71,8 +72,14 @@ class _AutoBannerSliderState extends State<AutoBannerSlider> {
               },
               itemBuilder: (context, index) {
                 return GestureDetector(
-                  onTap: () async =>
-                      await launchUrl(Uri.parse(widget.banners[index].path)),
+                  onTap: () async {
+                    if (Platform.isIOS) {
+                      await launchUrl(Uri.parse(widget.banners[index].iosPath));
+                    }
+                    if (Platform.isAndroid) {
+                      await launchUrl(Uri.parse(widget.banners[index].aosPath));
+                    }
+                  },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.network(
