@@ -7,7 +7,6 @@ import 'package:ormee_app/feature/mypage/info/bloc/student_info_state.dart';
 import 'package:ormee_app/feature/mypage/info/data/model.dart';
 import 'package:ormee_app/feature/mypage/info/data/remote_datasource.dart';
 import 'package:ormee_app/feature/mypage/info/data/repository.dart';
-import 'package:ormee_app/feature/mypage/info/presentation/widgets/password_modal.dart';
 import 'package:ormee_app/feature/mypage/info/presentation/widgets/phone_field.dart';
 import 'package:ormee_app/feature/mypage/info/utils/student_info_validator.dart';
 import 'package:ormee_app/shared/theme/app_colors.dart';
@@ -25,21 +24,16 @@ class StudentInfoScreen extends StatefulWidget {
 }
 
 class _StudentInfoScreenState extends State<StudentInfoScreen> {
-  bool _isVerified = false;
   bool _isModified = false;
   bool _isPasswordDirty = false;
   bool _isPasswordConfirmDirty = false;
   StudentInfoModel? _originalStudent;
 
-  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _passwordConfirmController =
-      TextEditingController();
+  final TextEditingController _passwordConfirmController = TextEditingController();
   final TextEditingController _emailLocalController = TextEditingController();
-  final TextEditingController _emailProviderController =
-      TextEditingController();
+  final TextEditingController _emailProviderController = TextEditingController();
 
-  final FocusNode _nameFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
   final FocusNode _passwordConfirmFocus = FocusNode();
   final FocusNode _emailLocalFocus = FocusNode();
@@ -47,34 +41,15 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
 
   @override
   void dispose() {
-    _nameController.dispose();
     _passwordController.dispose();
     _passwordConfirmController.dispose();
     _emailLocalController.dispose();
     _emailProviderController.dispose();
-    _nameFocus.dispose();
     _passwordFocus.dispose();
     _passwordConfirmFocus.dispose();
     _emailLocalFocus.dispose();
     _emailProviderFocus.dispose();
     super.dispose();
-  }
-
-  void _showPasswordModal(BuildContext context) {
-    Future.microtask(() {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) {
-          return PasswordModal(
-            titleText: "회원정보 수정",
-            onConfirm: (password) {
-              context.read<StudentInfoBloc>().add(VerifyPassword(password));
-            },
-          );
-        },
-      );
-    });
   }
 
   void _setEmail(String email) {
@@ -88,13 +63,11 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
   void _checkModified() {
     if (_originalStudent == null) return;
 
-    final newName = _nameController.text.trim();
     final newPassword = _passwordController.text.trim();
     final email =
         "${_emailLocalController.text.trim()}@${_emailProviderController.text.trim()}";
 
     final modified =
-        newName != _originalStudent!.name ||
         email != _originalStudent!.email ||
         newPassword.isNotEmpty;
 
@@ -109,20 +82,12 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          StudentInfoBloc(StudentInfoRepository(StudentInfoRemoteDataSource())),
+          StudentInfoBloc(StudentInfoRepository(StudentInfoRemoteDataSource()))
+            ..add(FetchStudentInfo()),
       child: BlocConsumer<StudentInfoBloc, StudentInfoState>(
         listener: (context, state) {
-          if (state is PasswordVerifyFailed) {
-            OrmeeToast.show(context, state.message, true);
-          } else if (state is PasswordVerified) {
-            setState(() {
-              _isVerified = true;
-            });
-            context.read<StudentInfoBloc>().add(FetchStudentInfo());
-            context.pop();
-          } else if (state is StudentInfoLoaded) {
+          if (state is StudentInfoLoaded) {
             _originalStudent = state.student;
-            _nameController.text = state.student.name;
             _setEmail(state.student.email);
           } else if (state is StudentInfoUpdateSuccess) {
             OrmeeToast.show(context, "회원 정보가 수정되었어요.", false);
@@ -132,13 +97,6 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
           }
         },
         builder: (context, state) {
-          if (!_isVerified) {
-            _showPasswordModal(context);
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
-          }
-
           if (state is StudentInfoLoaded) {
             final student = state.student;
             final emailError = StudentInfoValidator.validateEmail(
@@ -155,9 +113,7 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
 
             return GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: () {
-                FocusScope.of(context).unfocus();
-              },
+              onTap: () => FocusScope.of(context).unfocus(),
               child: Scaffold(
                 appBar: OrmeeAppBar(
                   title: '회원정보 수정',
@@ -166,7 +122,6 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
                   isDetail: false,
                   isPosting: false,
                 ),
-
                 body: SingleChildScrollView(
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -176,7 +131,7 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
                         text: "이름",
                         color: OrmeeColor.gray[90],
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(
@@ -199,7 +154,7 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
                         text: "아이디",
                         color: OrmeeColor.gray[90],
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(
@@ -209,7 +164,7 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: OrmeeColor.gray[20]!),
-                          color: OrmeeColor.gray[10], // 회색 배경
+                          color: OrmeeColor.gray[10],
                         ),
                         child: Label1Regular14(
                           text: student.username,
@@ -222,7 +177,7 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
                         text: "비밀번호",
                         color: OrmeeColor.gray[90],
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       OrmeeTextField(
                         hintText: "********",
                         controller: _passwordController,
@@ -230,8 +185,9 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
                         isPassword: true,
                         textInputAction: TextInputAction.next,
                         onTextChanged: (_) {
-                          if (!_isPasswordDirty)
+                          if (!_isPasswordDirty) {
                             setState(() => _isPasswordDirty = true);
+                          }
                           _checkModified();
                           setState(() {});
                         },
@@ -259,7 +215,7 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
                         text: "비밀번호 확인",
                         color: OrmeeColor.gray[90],
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       OrmeeTextField(
                         hintText: "********",
                         controller: _passwordConfirmController,
@@ -274,7 +230,8 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
                           setState(() {});
                         },
                         errorText:
-                            _isPasswordConfirmDirty && pwConfirmError != "비밀번호 일치"
+                            _isPasswordConfirmDirty &&
+                                pwConfirmError != "비밀번호 일치"
                             ? pwError
                             : null,
                         onFieldSubmitted: (_) => FocusScope.of(
@@ -297,7 +254,7 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
                         text: "연락처",
                         color: OrmeeColor.gray[90],
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       PhoneField(phoneNumber: student.phoneNumber),
                       const SizedBox(height: 30),
 
@@ -305,7 +262,7 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
                         text: "이메일",
                         color: OrmeeColor.gray[90],
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Row(
                         children: [
                           Expanded(
@@ -324,7 +281,10 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
                             ),
                           ),
                           const SizedBox(width: 6),
-                          Label1Regular14(text: '@', color: OrmeeColor.gray[90]),
+                          Label1Regular14(
+                            text: '@',
+                            color: OrmeeColor.gray[90],
+                          ),
                           const SizedBox(width: 6),
                           Expanded(
                             child: OrmeeTextField(
@@ -356,38 +316,41 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
                 ),
                 bottomNavigationBar: OrmeeBottomSheet(
                   text: '수정하기',
-                  isCheck: _isModified &&
+                  isCheck:
+                      _isModified &&
                       emailError == null &&
                       (!_isPasswordDirty || pwError == "사용 가능한 비밀번호예요.") &&
                       (!_isPasswordConfirmDirty || pwConfirmError == "비밀번호 일치"),
-                  onTap: _isModified &&
-                      emailError == null &&
-                      (!_isPasswordDirty || pwError == "사용 가능한 비밀번호예요.") &&
-                      (!_isPasswordConfirmDirty || pwConfirmError == "비밀번호 일치")
+                  onTap:
+                      _isModified &&
+                          emailError == null &&
+                          (!_isPasswordDirty || pwError == "사용 가능한 비밀번호예요.") &&
+                          (!_isPasswordConfirmDirty ||
+                              pwConfirmError == "비밀번호 일치")
                       ? () {
-                    final newPassword = (_isPasswordDirty)
-                        ? _passwordController.text.trim()
-                        : null;
+                          final newPassword = (_isPasswordDirty)
+                              ? _passwordController.text.trim()
+                              : null;
 
-                    final email =
-                        "${_emailLocalController.text.trim()}@${_emailProviderController.text.trim()}";
+                          final email =
+                              "${_emailLocalController.text.trim()}@${_emailProviderController.text.trim()}";
 
-                    context.read<StudentInfoBloc>().add(
-                      UpdateStudentInfo(
-                        student.copyWith(
-                          name: _nameController.text.trim(),
-                          email: email,
-                          password: newPassword,
-                        ),
-                      ),
-                    );
-                  }
+                          context.read<StudentInfoBloc>().add(
+                            UpdateStudentInfo(
+                              student.copyWith(
+                                email: email,
+                                password: newPassword,
+                              ),
+                            ),
+                          );
+                        }
                       : null,
                 ),
               ),
             );
           }
 
+          // 기본 로딩
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
