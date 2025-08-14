@@ -111,14 +111,6 @@ class AppRouter {
         },
       ),
       GoRoute(
-        path: '/lecture/detail/:id',
-        name: 'lecture detail',
-        builder: (context, state) {
-          final id = int.parse(state.pathParameters['id']!);
-          return LectureDetailScreen(lectureId: id);
-        },
-      ),
-      GoRoute(
         path: '/lecture/detail/:id/memo',
         builder: (context, state) {
           final id = int.parse(state.pathParameters['id']!);
@@ -302,6 +294,14 @@ class AppRouter {
             name: 'lecture home',
             pageBuilder: (context, state) =>
                 NoTransitionPage(child: LectureHome()),
+          ),
+          GoRoute(
+            path: '/lecture/detail/:id',
+            name: 'lecture detail',
+            builder: (context, state) {
+              final id = int.parse(state.pathParameters['id']!);
+              return LectureDetailScreen(lectureId: id);
+            },
           ),
           GoRoute(
             path: '/notification',
