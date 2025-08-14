@@ -32,7 +32,7 @@ class FindIdRemoteDataSource {
         return '*' * originalId.length;
       }
     } else {
-      throw Exception('입력하신 정보와 일치하는 아이디가 없어요.');
+      throw '입력하신 정보와 일치하는 아이디가 없어요.';
     }
   }
 }
