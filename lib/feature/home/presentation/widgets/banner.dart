@@ -73,11 +73,17 @@ class _AutoBannerSliderState extends State<AutoBannerSlider> {
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () async {
-                    if (Platform.isIOS) {
-                      await launchUrl(Uri.parse(widget.banners[index].iosPath));
-                    }
-                    if (Platform.isAndroid) {
-                      await launchUrl(Uri.parse(widget.banners[index].aosPath));
+                    final url = Platform.isIOS
+                        ? widget.banners[index].iosPath
+                        : widget.banners[index].aosPath;
+
+                    final encodedUrl = Uri.parse(Uri.encodeFull(url));
+
+                    if (!await launchUrl(
+                      encodedUrl,
+                      mode: LaunchMode.externalApplication,
+                    )) {
+                      throw 'Could not launch $encodedUrl';
                     }
                   },
                   child: ClipRRect(
