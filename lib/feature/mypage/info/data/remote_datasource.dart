@@ -42,8 +42,11 @@ class StudentInfoRemoteDataSource {
       } else {
         return false;
       }
-    } catch (e) {
-      throw Exception('비밀번호 검증 중 오류가 발생했습니다.');
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 403) {
+        return false;
+      }
+      rethrow;
     }
   }
 }
