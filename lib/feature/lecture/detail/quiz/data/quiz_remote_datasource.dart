@@ -19,7 +19,7 @@ class QuizRemoteDataSource {
       return data.map((e) => QuizModel.fromJson(e)).toList();
     } else {
       print('error: ${response.statusCode}');
-      throw Exception('퀴즈 정보를 불러오지 못했습니다.');
+      throw '퀴즈 정보를 불러오지 못했어요.';
     }
   }
 }

@@ -110,7 +110,7 @@ class QuizException implements Exception {
   QuizException(this.message);
 
   @override
-  String toString() => 'QuizException: $message';
+  String toString() => '$message';
 }
 
 /// 퀴즈 상태 열거형
@@ -152,7 +152,7 @@ class QuizUtils {
 
     final days = duration.inDays;
 
-    if(days == 0) {
+    if (days == 0) {
       return 'D-day';
     }
 

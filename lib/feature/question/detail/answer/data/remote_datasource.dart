@@ -7,15 +7,17 @@ class AnswerDetailRemoteDataSource {
 
   Future<AnswerDetailModel> fetchAnswerDetail(int questionId) async {
     try {
-      final response = await _dio.get('/students/questions/$questionId/answers');
+      final response = await _dio.get(
+        '/students/questions/$questionId/answers',
+      );
 
-      if(response.statusCode == 200 && response.data != null) {
+      if (response.statusCode == 200 && response.data != null) {
         return AnswerDetailModel.fromJson(response.data);
       } else {
-        throw Exception('답변 데이터를 불러올 수 없습니다.');
+        throw '답변 데이터를 불러올 수 없습니다.';
       }
     } catch (e) {
-      throw Exception('답변 데이터를 불러오는 중 오류가 발생했습니다.');
+      throw '답변 데이터를 불러오는 중 오류가 발생했습니다.';
     }
   }
 }

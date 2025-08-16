@@ -13,10 +13,10 @@ class QuestionCreateRemoteDataSource {
       );
 
       if (res.statusCode != 200 && res.statusCode != 201) {
-        throw Exception('질문을 등록할 수 없습니다.');
+        throw '질문을 등록할 수 없습니다.';
       }
     } catch (_) {
-      throw Exception('질문 등록 중 오류가 발생했습니다.');
+      throw '질문 등록 중 오류가 발생했습니다.';
     }
   }
 }

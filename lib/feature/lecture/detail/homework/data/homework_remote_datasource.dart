@@ -18,7 +18,7 @@ class HomeworkRemoteDataSource {
       final List data = response.data['data'];
       return data.map((e) => HomeworkModel.fromJson(e)).toList();
     } else {
-      throw Exception('숙제 정보를 불러오지 못했습니다.');
+      throw '숙제 정보를 불러오지 못했어요.';
     }
   }
 }

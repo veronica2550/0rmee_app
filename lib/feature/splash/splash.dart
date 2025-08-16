@@ -33,6 +33,8 @@ class _SplashScreenState extends State<SplashScreen> {
       await Future.delayed(waitTime);
     }
 
+    if (!mounted) return; // ← 여기 추가
+
     if (accessToken != null && refreshToken != null) {
       context.go('/home');
     } else {

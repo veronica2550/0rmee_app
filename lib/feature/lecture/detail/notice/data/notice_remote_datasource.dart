@@ -18,7 +18,7 @@ class NoticeRemoteDataSource {
       final List data = response.data['data'];
       return data.map((e) => NoticeModel.fromJson(e)).toList();
     } else {
-      throw Exception('공지사항을 불러오지 못했습니다.');
+      throw '공지사항을 불러오지 못했어요.';
     }
   }
 
@@ -31,7 +31,7 @@ class NoticeRemoteDataSource {
       final List data = response.data['data'];
       return data.map((e) => NoticeModel.fromJson(e)).toList();
     } else {
-      throw Exception('고정된 공지사항을 불러오지 못했습니다.');
+      throw '고정된 공지사항을 불러오지 못했어요.';
     }
   }
 }

@@ -17,7 +17,7 @@ class HomeRemoteDataSource {
       final List data = response.data['data'];
       return data.map((e) => BannerModel.fromJson(e)).toList();
     } else {
-      throw Exception('배너 목록을 불러오지 못했습니다.');
+      throw '배너 목록을 불러오지 못했어요.';
     }
   }
 
@@ -29,7 +29,7 @@ class HomeRemoteDataSource {
       final List data = response.data['data'];
       return data.map((e) => LectureCard.fromJson(e)).toList();
     } else {
-      throw Exception('강의 목록을 불러오지 못했습니다.');
+      throw '강의 목록을 불러오지 못했어요.';
     }
   }
 
@@ -43,7 +43,7 @@ class HomeRemoteDataSource {
       final List data = response.data['data'];
       return data.map((e) => QuizCard.fromJson(e)).toList();
     } else {
-      throw Exception('퀴즈 목록을 불러오지 못했습니다.');
+      throw '퀴즈 목록을 불러오지 못했어요.';
     }
   }
 
@@ -57,7 +57,7 @@ class HomeRemoteDataSource {
       final List data = response.data['data'];
       return data.map((e) => HomeworkCard.fromJson(e)).toList();
     } else {
-      throw Exception('숙제 목록을 불러오지 못했습니다. Status: ${response.statusCode}');
+      throw '숙제 목록을 불러오지 못했어요.';
     }
   }
 }

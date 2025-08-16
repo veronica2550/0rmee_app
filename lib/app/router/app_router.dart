@@ -42,11 +42,13 @@ import 'package:ormee_app/feature/lecture/home/bloc/lecture_bloc.dart';
 import 'package:ormee_app/feature/lecture/home/presentation/pages/lecture_home.dart';
 import 'package:ormee_app/feature/lecture/home/presentation/widgets/qr_scanner.dart';
 import 'package:ormee_app/feature/question/create/presentation/pages/question_create.dart';
+import 'package:ormee_app/main.dart';
 import 'package:ormee_app/shared/widgets/full_image_viewer.dart';
 import 'package:ormee_app/shared/widgets/navigationbar.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
+    navigatorKey: navigatorKey,
     initialLocation: '/splash',
     routes: [
       GoRoute(

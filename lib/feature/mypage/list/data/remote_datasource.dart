@@ -11,11 +11,11 @@ class MyPageProfileRemoteDatasource {
       if (response.statusCode == 200 && response.data != null) {
         return response.data['data'] as String;
       } else {
-        throw Exception('프로필 데이터를 불러올 수 없습니다.');
+        throw '프로필 데이터를 불러올 수 없어요.';
       }
     } catch (e) {
       print(e.toString());
-      throw Exception('프로필 데이터를 불러오는 중 오류가 발생했습니다.');
+      throw '프로필 데이터를 불러오는 중 오류가 발생했어요.';
     }
   }
 }

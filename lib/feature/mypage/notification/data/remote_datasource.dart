@@ -12,24 +12,29 @@ class NotificationSettingRemoteDataSource {
       if (response.statusCode == 200 && response.data != null) {
         return NotificationSettingModel.fromJson(response.data);
       } else {
-        throw Exception('알림설정 데이터를 불러올 수 없습니다.');
+        throw '알림설정 데이터를 불러올 수 없습니다.';
       }
     } catch (e) {
-      throw Exception('알림설정 데이터를 불러오는 중 오류가 발생했습니다.');
+      throw '알림설정 데이터를 불러오는 중 오류가 발생했습니다.';
     }
   }
 
-  Future<NotificationSettingModel> updateStudentInfo(NotificationSettingModel settings) async {
+  Future<NotificationSettingModel> updateStudentInfo(
+    NotificationSettingModel settings,
+  ) async {
     try {
-      final response = await _dio.put('/students/notifications/settings', data: settings.toJson());
+      final response = await _dio.put(
+        '/students/notifications/settings',
+        data: settings.toJson(),
+      );
 
       if (response.statusCode == 200 && response.data != null) {
         return NotificationSettingModel.fromJson(response.data);
       } else {
-        throw Exception('알림설정 데이터를 수정할 수 없습니다.');
+        throw '알림설정 데이터를 수정할 수 없어요.';
       }
     } catch (e) {
-      throw Exception('알림설정 데이터를 수정하는 중 오류가 발생했습니다.');
+      throw '알림설정 데이터를 수정하는 중 오류가 발생했어요.';
     }
   }
 }
