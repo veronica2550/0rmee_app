@@ -84,89 +84,97 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<FindPasswordBloc, FindPasswordState>(
-      listener: (context, state) {
-        if (state is FindPasswordSuccess) {
-          context.go('/login');
-          OrmeeToast.show(context, '비밀번호를 성공적으로 변경했어요', false);
-        } else if (state is FindPasswordFailure) {
-          OrmeeToast.show(context, state.message, true);
-        }
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        FocusScope.of(context).unfocus();
       },
-      child: Scaffold(
-        appBar: const OrmeeAppBar(
-          isLecture: false,
-          isImage: false,
-          isDetail: false,
-          isPosting: false,
-          title: "아이디/비밀번호 찾기",
-        ),
-        body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 51),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Body2SemiBoldNormal14(text: '새 비밀번호'),
-              const SizedBox(height: 4),
-              OrmeeTextField(
-                controller: _passwordController,
-                focusNode: _passwordFocusNode,
-                textInputAction: TextInputAction.next,
-                onTextChanged: (text) {
-                  _validatePassword();
-                  if (_confirmPasswordController.text.isNotEmpty) {
-                    _validateConfirmPassword();
-                  }
-                },
-                onFieldSubmitted: (_) {
-                  FocusScope.of(
-                    context,
-                  ).requestFocus(_confirmPasswordFocusNode);
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 4, 0, 0),
-                child: Label2Regular12(
-                  text: _passwordError ?? '영문, 숫자, 특수문자 2종 이상 포함 8~16자',
-                  color: _passwordError != null
-                      ? OrmeeColor.systemError
-                      : OrmeeColor.gray[60],
-                ),
-              ),
-              const SizedBox(height: 12),
-              const Body2SemiBoldNormal14(text: '비밀번호 확인'),
-              const SizedBox(height: 4),
-              OrmeeTextField(
-                controller: _confirmPasswordController,
-                focusNode: _confirmPasswordFocusNode,
-                textInputAction: TextInputAction.done,
-                onTextChanged: (text) => _validateConfirmPassword(),
-                onFieldSubmitted: (_) {
-                  if (_isFormValid) _onChangePasswordPressed();
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 4, 0, 0),
-                child: Label2Regular12(
-                  text: _confirmPasswordError ?? '',
-                  color: _confirmPasswordError != null
-                      ? OrmeeColor.systemError
-                      : OrmeeColor.purple[50],
-                ),
-              ),
-            ],
+      child: BlocListener<FindPasswordBloc, FindPasswordState>(
+        listener: (context, state) {
+          if (state is FindPasswordSuccess) {
+            context.go('/login');
+            OrmeeToast.show(context, '비밀번호를 성공적으로 변경했어요', false);
+          } else if (state is FindPasswordFailure) {
+            OrmeeToast.show(context, state.message, true);
+          }
+        },
+        child: Scaffold(
+          appBar: const OrmeeAppBar(
+            isLecture: false,
+            isImage: false,
+            isDetail: false,
+            isPosting: false,
+            title: "아이디/비밀번호 찾기",
           ),
-        ),
-        bottomSheet: BlocBuilder<FindPasswordBloc, FindPasswordState>(
-          builder: (context, state) {
-            return OrmeeBottomSheet(
-              text: state is FindPasswordLoading ? "변경 중..." : "비밀번호 변경",
-              isCheck: _isFormValid && state is! FindPasswordLoading,
-              onTap: state is FindPasswordLoading
-                  ? null
-                  : _onChangePasswordPressed,
-            );
-          },
+          body: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 51),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Body2SemiBoldNormal14(text: '새 비밀번호'),
+                const SizedBox(height: 4),
+                OrmeeTextField(
+                  controller: _passwordController,
+                  focusNode: _passwordFocusNode,
+                  textInputAction: TextInputAction.next,
+                  isPassword: true,
+                  onTextChanged: (text) {
+                    _validatePassword();
+                    if (_confirmPasswordController.text.isNotEmpty) {
+                      _validateConfirmPassword();
+                    }
+                  },
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(
+                      context,
+                    ).requestFocus(_confirmPasswordFocusNode);
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 4, 0, 0),
+                  child: Label2Regular12(
+                    text: _passwordError ?? '영문, 숫자, 특수문자 2종 이상 포함 8~16자',
+                    color: _passwordError != null
+                        ? OrmeeColor.systemError
+                        : OrmeeColor.gray[60],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const Body2SemiBoldNormal14(text: '비밀번호 확인'),
+                const SizedBox(height: 4),
+                OrmeeTextField(
+                  controller: _confirmPasswordController,
+                  focusNode: _confirmPasswordFocusNode,
+                  textInputAction: TextInputAction.done,
+                  isPassword: true,
+                  onTextChanged: (text) => _validateConfirmPassword(),
+                  onFieldSubmitted: (_) {
+                    if (_isFormValid) _onChangePasswordPressed();
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 4, 0, 0),
+                  child: Label2Regular12(
+                    text: _confirmPasswordError ?? '',
+                    color: _confirmPasswordError != null
+                        ? OrmeeColor.systemError
+                        : OrmeeColor.purple[50],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          bottomSheet: BlocBuilder<FindPasswordBloc, FindPasswordState>(
+            builder: (context, state) {
+              return OrmeeBottomSheet(
+                text: state is FindPasswordLoading ? "변경 중..." : "비밀번호 변경",
+                isCheck: _isFormValid && state is! FindPasswordLoading,
+                onTap: state is FindPasswordLoading
+                    ? null
+                    : _onChangePasswordPressed,
+              );
+            },
+          ),
         ),
       ),
     );

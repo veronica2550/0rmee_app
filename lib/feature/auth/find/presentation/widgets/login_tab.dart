@@ -62,96 +62,102 @@ class _LoginTabState extends State<LoginTab> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<FindIdBloc, FindIdState>(
-      listener: (context, state) {
-        if (state is FindIdSuccess) {
-          context.push(
-            '/find/login',
-            extra: {'name': state.name, 'foundId': state.foundId},
-          );
-        } else if (state is FindIdFailure) {
-          OrmeeToast.show(context, state.message, true);
-        }
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        FocusScope.of(context).unfocus();
       },
-      child: Scaffold(
-        body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 51),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Body2SemiBoldNormal14(text: '이름'),
-              const SizedBox(height: 4),
-              OrmeeTextField(
-                controller: _nameController,
-                focusNode: _nameFocusNode,
-                textInputAction: TextInputAction.next,
-                onTextChanged: (text) => setState(() {}),
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_phone1FocusNode);
-                },
-              ),
-              const SizedBox(height: 12),
-              const Body2SemiBoldNormal14(text: '연락처'),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: OrmeeTextField(
-                      controller: _phone1Controller,
-                      focusNode: _phone1FocusNode,
-                      textInputAction: TextInputAction.next,
-                      onTextChanged: (text) => setState(() {}),
-                      onFieldSubmitted: (_) {
-                        FocusScope.of(context).requestFocus(_phone2FocusNode);
-                      },
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 13,
-                    child: Center(child: Label1Regular14(text: "-")),
-                  ),
-                  Expanded(
-                    flex: 4,
-                    child: OrmeeTextField(
-                      controller: _phone2Controller,
-                      focusNode: _phone2FocusNode,
-                      textInputAction: TextInputAction.next,
-                      onTextChanged: (text) => setState(() {}),
-                      onFieldSubmitted: (_) {
-                        FocusScope.of(context).requestFocus(_phone3FocusNode);
-                      },
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 13,
-                    child: Center(child: Label1Regular14(text: "-")),
-                  ),
-                  Expanded(
-                    flex: 4,
-                    child: OrmeeTextField(
-                      controller: _phone3Controller,
-                      focusNode: _phone3FocusNode,
-                      textInputAction: TextInputAction.done,
-                      onTextChanged: (text) => setState(() {}),
-                      onFieldSubmitted: (_) {
-                        if (_isFormValid) _onFindIdPressed();
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        bottomSheet: BlocBuilder<FindIdBloc, FindIdState>(
-          builder: (context, state) {
-            return OrmeeBottomSheet(
-              text: state is FindIdLoading ? "조회 중..." : "아이디 찾기",
-              isCheck: _isFormValid && state is! FindIdLoading,
-              onTap: state is FindIdLoading ? null : _onFindIdPressed,
+      child: BlocListener<FindIdBloc, FindIdState>(
+        listener: (context, state) {
+          if (state is FindIdSuccess) {
+            context.push(
+              '/find/login',
+              extra: {'name': state.name, 'foundId': state.foundId},
             );
-          },
+          } else if (state is FindIdFailure) {
+            OrmeeToast.show(context, state.message, true);
+          }
+        },
+        child: Scaffold(
+          body: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 51),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Body2SemiBoldNormal14(text: '이름'),
+                const SizedBox(height: 4),
+                OrmeeTextField(
+                  controller: _nameController,
+                  focusNode: _nameFocusNode,
+                  textInputAction: TextInputAction.next,
+                  onTextChanged: (text) => setState(() {}),
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_phone1FocusNode);
+                  },
+                ),
+                const SizedBox(height: 12),
+                const Body2SemiBoldNormal14(text: '연락처'),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: OrmeeTextField(
+                        controller: _phone1Controller,
+                        focusNode: _phone1FocusNode,
+                        textInputAction: TextInputAction.next,
+                        onTextChanged: (text) => setState(() {}),
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_phone2FocusNode);
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 13,
+                      child: Center(child: Label1Regular14(text: "-")),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: OrmeeTextField(
+                        controller: _phone2Controller,
+                        focusNode: _phone2FocusNode,
+                        textInputAction: TextInputAction.next,
+                        onTextChanged: (text) => setState(() {}),
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_phone3FocusNode);
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 13,
+                      child: Center(child: Label1Regular14(text: "-")),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: OrmeeTextField(
+                        controller: _phone3Controller,
+                        focusNode: _phone3FocusNode,
+                        textInputAction: TextInputAction.done,
+                        onTextChanged: (text) => setState(() {}),
+                        onFieldSubmitted: (_) {
+                          if (_isFormValid) _onFindIdPressed();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          bottomSheet: BlocBuilder<FindIdBloc, FindIdState>(
+            builder: (context, state) {
+              return OrmeeBottomSheet(
+                text: state is FindIdLoading ? "조회 중..." : "아이디 찾기",
+                isCheck: _isFormValid && state is! FindIdLoading,
+                onTap: state is FindIdLoading ? null : _onFindIdPressed,
+              );
+            },
+          ),
         ),
       ),
     );
