@@ -124,7 +124,13 @@ class Quiz extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Label1Regular14(text: problem.content),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Label1Regular14(text: "${index + 1}. "),
+                        Expanded(child: Label1Regular14(text: problem.content)),
+                      ],
+                    ),
                     SizedBox(height: 15),
 
                     // 문제 타입에 따른 답안 입력 위젯
