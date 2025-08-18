@@ -70,12 +70,12 @@ class MyPageScreen extends StatelessWidget {
                                 OrmeeToast.show(dialogContext, state.message, true);
                               }
                             },
-                            builder: (ctx, state) {
+                            builder: (context, state) {
                               return PasswordModal(
                                 titleText: "회원정보 수정",
                                 submitting: submitting,
                                 onConfirm: (pw) =>
-                                    ctx.read<StudentInfoBloc>().add(VerifyPassword(pw)),
+                                    context.read<StudentInfoBloc>().add(VerifyPassword(pw)),
                               );
                             },
                           ),
@@ -149,13 +149,14 @@ class MyPageScreen extends StatelessWidget {
                       onTap: () {
                         showDialog(
                           context: context,
-                          builder: (context) {
+                          builder: (dialogContext) {
                             return OrmeeDialog(
                               titleText: '로그아웃 하시겠어요?',
                               icon: 'assets/icons/logout.svg',
                               onConfirm: () {
+                                context.read<MyPageListBloc>().add(LogOut());
                                 ApiClient.instance.logout();
-                                context.pop();
+                                dialogContext.pop();
                               },
                             );
                           },

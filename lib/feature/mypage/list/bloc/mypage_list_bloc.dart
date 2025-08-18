@@ -17,5 +17,15 @@ class MyPageListBloc
         emit(MyPageListError(e.toString()));
       }
     });
+
+    on<LogOut>((event, emit) async {
+      emit(LoggingOut());
+      try {
+        final result = await repository.logOut();
+        emit(LoggedOut());
+      } catch (e) {
+        emit(LogOutFailed("로그아웃 중 오류가 발생했어요."));
+      }
+    });
   }
 }
