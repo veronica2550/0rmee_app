@@ -127,7 +127,7 @@ class MypageHistory extends StatelessWidget {
 
     return SafeArea(
       child: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.only(top: 8),
         itemCount: lectures.length,
         itemBuilder: (context, index) {
           final lecture = lectures[index];
