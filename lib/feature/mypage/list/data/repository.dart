@@ -8,4 +8,8 @@ class MyPageProfileRepository {
   Future<String> readName() {
     return remoteDataSource.fetchProfile();
   }
+
+  Future<void> logOut() async {
+    return remoteDataSource.logOut();
+  }
 }

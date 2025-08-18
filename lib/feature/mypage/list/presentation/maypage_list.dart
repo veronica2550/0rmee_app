@@ -46,68 +46,51 @@ class MyPageScreen extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      ProfileCard(
-                        name: name,
-                        onTap: () async {
-                          final submitting = ValueNotifier<bool>(false); // ← 추가
-
-                          final verified = await showDialog<bool>(
-                            context: context,
-                            barrierDismissible: false,
-                            useRootNavigator: true,
-                            builder: (dialogContext) {
-                              return BlocProvider(
-                                create: (_) => StudentInfoBloc(
-                                  StudentInfoRepository(
-                                    StudentInfoRemoteDataSource(),
-                                  ),
-                                ),
-                                child:
-                                    BlocConsumer<
-                                      StudentInfoBloc,
-                                      StudentInfoState
-                                    >(
-                                      listener: (ctx, state) {
-                                        if (state is PasswordVerified) {
-                                          WidgetsBinding.instance
-                                              .addPostFrameCallback((_) {
-                                                Navigator.of(
-                                                  dialogContext,
-                                                  rootNavigator: true,
-                                                ).pop(true);
-                                              });
-                                        } else if (state
-                                            is PasswordVerifyFailed) {
-                                          submitting.value = false;
-                                          OrmeeToast.show(
-                                            dialogContext,
-                                            state.message,
-                                            true,
-                                          );
-                                        }
-                                      },
-                                      builder: (ctx, state) {
-                                        return PasswordModal(
-                                          titleText: "회원정보 수정",
-                                          submitting: submitting,
-                                          onConfirm: (pw) => ctx
-                                              .read<StudentInfoBloc>()
-                                              .add(VerifyPassword(pw)),
-                                        );
-                                      },
-                                    ),
-                              );
-                            },
+                    ProfileCard(
+                    name: name,
+                    onTap: () async {
+                      final submitting = ValueNotifier<bool>(false); // ← 추가
+                
+                      final verified = await showDialog<bool>(
+                        context: context,
+                        barrierDismissible: false,
+                        useRootNavigator: true,
+                        builder: (dialogContext) {
+                          return BlocProvider(
+                            create: (_) => StudentInfoBloc(
+                              StudentInfoRepository(StudentInfoRemoteDataSource()),
+                            ),
+                            child: BlocConsumer<StudentInfoBloc, StudentInfoState>(
+                              listener: (ctx, state) {
+                                if (state is PasswordVerified) {
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    Navigator.of(dialogContext, rootNavigator: true).pop(true);
+                                  });
+                                } else if (state is PasswordVerifyFailed) {
+                                  submitting.value = false;
+                                  OrmeeToast.show(dialogContext, state.message, true);
+                                }
+                              },
+                              builder: (context, state) {
+                                return PasswordModal(
+                                  titleText: "회원정보 수정",
+                                  submitting: submitting,
+                                  onConfirm: (pw) =>
+                                      context.read<StudentInfoBloc>().add(VerifyPassword(pw)),
+                                );
+                              },
+                            ),
                           );
-
-                          if (verified == true && context.mounted) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              if (context.mounted)
-                                GoRouter.of(context).push('/mypage/info');
-                            });
-                          }
                         },
-                      ),
+                      );
+                
+                      if (verified == true && context.mounted) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (context.mounted) GoRouter.of(context).push('/mypage/info');
+                        });
+                      }
+                    },
+                  ),
                       SizedBox(height: 10),
                       MyPageCard(
                         icon: 'assets/icons/list.svg',
@@ -167,13 +150,14 @@ class MyPageScreen extends StatelessWidget {
                         onTap: () {
                           showDialog(
                             context: context,
-                            builder: (context) {
+                            builder: (dialogContext) {
                               return OrmeeDialog(
                                 titleText: '로그아웃 하시겠어요?',
                                 icon: 'assets/icons/logout.svg',
                                 onConfirm: () {
+                                  context.read<MyPageListBloc>().add(LogOut());
                                   ApiClient.instance.logout();
-                                  context.pop();
+                                  dialogContext.pop();
                                 },
                               );
                             },
