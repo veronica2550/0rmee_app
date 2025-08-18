@@ -15,3 +15,13 @@ class MyPageListError extends MyPageListState {
 
   MyPageListError(this.message);
 }
+
+class LoggingOut extends MyPageListState {}
+
+class LoggedOut extends MyPageListState {}
+
+class LogOutFailed extends MyPageListState {
+  final String message;
+
+  LogOutFailed(this.message);
+}

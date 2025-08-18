@@ -9,6 +9,7 @@ class NotificationSettingModel {
   final bool question;
   final bool notice;
   final bool event;
+  final String? deviceToken;
 
   NotificationSettingModel({
     required this.quizRegister,
@@ -21,6 +22,7 @@ class NotificationSettingModel {
     required this.question,
     required this.notice,
     required this.event,
+    this.deviceToken
   });
 
   factory NotificationSettingModel.fromJson(Map<String, dynamic> json) {
@@ -42,6 +44,7 @@ class NotificationSettingModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> json = {};
 
+    json['deviceToken'] = deviceToken;
     json['quizRegister'] = quizRegister;
     json['quizRemind'] = quizRemind;
     json['quizDeadline'] = quizDeadline;
@@ -67,6 +70,7 @@ class NotificationSettingModel {
     bool? question,
     bool? notice,
     bool? event,
+    String? deviceToken,
   }) {
     return NotificationSettingModel(
       quizRegister: quizRegister ?? this.quizRegister,
@@ -79,6 +83,7 @@ class NotificationSettingModel {
       question: question ?? this.question,
       notice: notice ?? this.notice,
       event: event ?? this.event,
+      deviceToken: deviceToken ?? this.deviceToken,
     );
   }
 }
