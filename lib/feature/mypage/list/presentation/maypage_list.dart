@@ -41,129 +41,131 @@ class MyPageScreen extends StatelessWidget {
             final name = state.name;
             return Scaffold(
               appBar: MyPageAppBar(title: '마이페이지'),
-              body: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                  ProfileCard(
-                  name: name,
-                  onTap: () async {
-                    final submitting = ValueNotifier<bool>(false); // ← 추가
-
-                    final verified = await showDialog<bool>(
-                      context: context,
-                      barrierDismissible: false,
-                      useRootNavigator: true,
-                      builder: (dialogContext) {
-                        return BlocProvider(
-                          create: (_) => StudentInfoBloc(
-                            StudentInfoRepository(StudentInfoRemoteDataSource()),
-                          ),
-                          child: BlocConsumer<StudentInfoBloc, StudentInfoState>(
-                            listener: (ctx, state) {
-                              if (state is PasswordVerified) {
-                                WidgetsBinding.instance.addPostFrameCallback((_) {
-                                  Navigator.of(dialogContext, rootNavigator: true).pop(true);
-                                });
-                              } else if (state is PasswordVerifyFailed) {
-                                submitting.value = false;
-                                OrmeeToast.show(dialogContext, state.message, true);
-                              }
-                            },
-                            builder: (context, state) {
-                              return PasswordModal(
-                                titleText: "회원정보 수정",
-                                submitting: submitting,
-                                onConfirm: (pw) =>
-                                    context.read<StudentInfoBloc>().add(VerifyPassword(pw)),
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: [
+                    ProfileCard(
+                    name: name,
+                    onTap: () async {
+                      final submitting = ValueNotifier<bool>(false); // ← 추가
+                
+                      final verified = await showDialog<bool>(
+                        context: context,
+                        barrierDismissible: false,
+                        useRootNavigator: true,
+                        builder: (dialogContext) {
+                          return BlocProvider(
+                            create: (_) => StudentInfoBloc(
+                              StudentInfoRepository(StudentInfoRemoteDataSource()),
+                            ),
+                            child: BlocConsumer<StudentInfoBloc, StudentInfoState>(
+                              listener: (ctx, state) {
+                                if (state is PasswordVerified) {
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    Navigator.of(dialogContext, rootNavigator: true).pop(true);
+                                  });
+                                } else if (state is PasswordVerifyFailed) {
+                                  submitting.value = false;
+                                  OrmeeToast.show(dialogContext, state.message, true);
+                                }
+                              },
+                              builder: (context, state) {
+                                return PasswordModal(
+                                  titleText: "회원정보 수정",
+                                  submitting: submitting,
+                                  onConfirm: (pw) =>
+                                      context.read<StudentInfoBloc>().add(VerifyPassword(pw)),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      );
+                
+                      if (verified == true && context.mounted) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (context.mounted) GoRouter.of(context).push('/mypage/info');
+                        });
+                      }
+                    },
+                  ),
+                      SizedBox(height: 10),
+                      MyPageCard(
+                        icon: 'assets/icons/list.svg',
+                        title: '수강내역',
+                        onTap: () {
+                          context.push('/mypage/history');
+                        },
+                      ),
+                      MyPageCard(
+                        icon: 'assets/icons/notification_empty.svg',
+                        title: '알림설정',
+                        onTap: () {
+                          context.push('/mypage/notification');
+                        },
+                      ),
+                      Divider(
+                        height: 16,
+                        thickness: 1,
+                        color: OrmeeColor.gray[20],
+                      ),
+                      // MyPageCard(
+                      //   icon: 'assets/icons/help.svg',
+                      //   title: 'FAQ',
+                      //   onTap: () {
+                      //     // FAQ 화면 라우팅
+                      //   },
+                      // ),
+                      MyPageCard(
+                        icon: 'assets/icons/hand.svg',
+                        title: '이용약관',
+                        onTap: () {
+                          // 이용약관 화면 라우탱
+                        },
+                      ),
+                      MyPageCard(
+                        icon: 'assets/icons/verified.svg',
+                        title: '개인정보처리방침',
+                        onTap: () {
+                          // 개인정보처리방침 라우팅
+                        },
+                      ),
+                      MyPageCard(
+                        icon: 'assets/icons/info.svg',
+                        title: '버전',
+                        onTap: () {
+                          context.push('/mypage/version');
+                        },
+                      ),
+                      Divider(
+                        height: 16,
+                        thickness: 1,
+                        color: OrmeeColor.gray[20],
+                      ),
+                      MyPageCard(
+                        icon: 'assets/icons/logout.svg',
+                        title: '로그아웃',
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (dialogContext) {
+                              return OrmeeDialog(
+                                titleText: '로그아웃 하시겠어요?',
+                                icon: 'assets/icons/logout.svg',
+                                onConfirm: () {
+                                  context.read<MyPageListBloc>().add(LogOut());
+                                  ApiClient.instance.logout();
+                                  dialogContext.pop();
+                                },
                               );
                             },
-                          ),
-                        );
-                      },
-                    );
-
-                    if (verified == true && context.mounted) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        if (context.mounted) GoRouter.of(context).push('/mypage/info');
-                      });
-                    }
-                  },
-                ),
-                    SizedBox(height: 10),
-                    MyPageCard(
-                      icon: 'assets/icons/list.svg',
-                      title: '수강내역',
-                      onTap: () {
-                        context.push('/mypage/history');
-                      },
-                    ),
-                    MyPageCard(
-                      icon: 'assets/icons/notification_empty.svg',
-                      title: '알림설정',
-                      onTap: () {
-                        context.push('/mypage/notification');
-                      },
-                    ),
-                    Divider(
-                      height: 16,
-                      thickness: 1,
-                      color: OrmeeColor.gray[20],
-                    ),
-                    // MyPageCard(
-                    //   icon: 'assets/icons/help.svg',
-                    //   title: 'FAQ',
-                    //   onTap: () {
-                    //     // FAQ 화면 라우팅
-                    //   },
-                    // ),
-                    MyPageCard(
-                      icon: 'assets/icons/hand.svg',
-                      title: '이용약관',
-                      onTap: () {
-                        // 이용약관 화면 라우탱
-                      },
-                    ),
-                    MyPageCard(
-                      icon: 'assets/icons/verified.svg',
-                      title: '개인정보처리방침',
-                      onTap: () {
-                        // 개인정보처리방침 라우팅
-                      },
-                    ),
-                    MyPageCard(
-                      icon: 'assets/icons/info.svg',
-                      title: '버전',
-                      onTap: () {
-                        context.push('/mypage/version');
-                      },
-                    ),
-                    Divider(
-                      height: 16,
-                      thickness: 1,
-                      color: OrmeeColor.gray[20],
-                    ),
-                    MyPageCard(
-                      icon: 'assets/icons/logout.svg',
-                      title: '로그아웃',
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (dialogContext) {
-                            return OrmeeDialog(
-                              titleText: '로그아웃 하시겠어요?',
-                              icon: 'assets/icons/logout.svg',
-                              onConfirm: () {
-                                context.read<MyPageListBloc>().add(LogOut());
-                                ApiClient.instance.logout();
-                                dialogContext.pop();
-                              },
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );

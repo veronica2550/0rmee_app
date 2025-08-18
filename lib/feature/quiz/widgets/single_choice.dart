@@ -32,6 +32,7 @@ class OrmeeSingleChoiceList extends StatelessWidget {
           child: Obx(() {
             final isSelected = selectedIndex.value == index;
             return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SvgPicture.asset(
                   isSelected

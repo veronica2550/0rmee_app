@@ -40,6 +40,7 @@ class Quiz extends StatelessWidget {
     });
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: OrmeeColor.white,
       appBar: OrmeeAppBar(
         title: quizTitle,
@@ -123,7 +124,13 @@ class Quiz extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Label1Regular14(text: problem.content),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Label1Regular14(text: "${index + 1}. "),
+                        Expanded(child: Label1Regular14(text: problem.content)),
+                      ],
+                    ),
                     SizedBox(height: 15),
 
                     // 문제 타입에 따른 답안 입력 위젯
@@ -225,13 +232,15 @@ class Quiz extends StatelessWidget {
         builder: (context) => submitted
             ? customDialog(context)
             : TimeOverDialog(
-          onConfirm: () async {
-            GoRouter.of(context).routerDelegate.navigatorKey.currentState?.popUntil(
-                  (route) => route.settings.name == '/quiz/detail/$quizId',
-            );
-            GlobalEventBus().fire(QuizDetailRefreshEvent(quizId));
-          },
-        ),
+                onConfirm: () async {
+                  GoRouter.of(
+                    context,
+                  ).routerDelegate.navigatorKey.currentState?.popUntil(
+                    (route) => route.settings.name == '/quiz/detail/$quizId',
+                  );
+                  GlobalEventBus().fire(QuizDetailRefreshEvent(quizId));
+                },
+              ),
       );
     }
   }
@@ -282,7 +291,7 @@ class Quiz extends StatelessWidget {
     OrmeeToast.show(context, '퀴즈 응시 완료', false);
     // 상세로 복귀 + 새로고침 이벤트
     GoRouter.of(context).routerDelegate.navigatorKey.currentState?.popUntil(
-          (route) => route.settings.name == '/quiz/detail/$quizId',
+      (route) => route.settings.name == '/quiz/detail/$quizId',
     );
     GlobalEventBus().fire(QuizDetailRefreshEvent(quizId));
   }

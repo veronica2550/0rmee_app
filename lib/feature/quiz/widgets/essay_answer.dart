@@ -56,14 +56,23 @@ class EssayAnswer extends StatelessWidget {
                   ),
                   padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Body2RegularNormal14(
-                        text: "정답:",
-                        color: OrmeeColor.gray[60],
+                      Expanded(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Body2RegularNormal14(
+                              text: "정답:",
+                              color: OrmeeColor.gray[60],
+                            ),
+                            SizedBox(width: 8),
+                            Expanded(child: Label1Regular14(text: answer)),
+                          ],
+                        ),
                       ),
                       SizedBox(width: 8),
-                      Label1Regular14(text: answer),
-                      Spacer(),
                       SvgPicture.asset("assets/icons/cancel.svg"),
                     ],
                   ),

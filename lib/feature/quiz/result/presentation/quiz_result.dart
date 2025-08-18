@@ -234,9 +234,10 @@ class QuizResultView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Label1Regular14(text: "$questionNumber. "),
-              Label1Regular14(text: problem.content),
+              Expanded(child: Label1Regular14(text: problem.content)),
             ],
           ),
           // 문제 헤더
