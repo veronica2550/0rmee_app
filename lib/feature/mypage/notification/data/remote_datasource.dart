@@ -1,13 +1,18 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:ormee_app/core/network/api_client.dart';
 import 'package:ormee_app/feature/mypage/notification/data/model.dart';
 
 class NotificationSettingRemoteDataSource {
   final Dio _dio = ApiClient.instance.dio;
 
-  Future<NotificationSettingModel> fetchStudentInfo() async {
+  Future<NotificationSettingModel> fetchNotificationSetting() async {
     try {
-      final response = await _dio.get('/students/notifications/settings');
+      String? token = await FirebaseMessaging.instance.getToken();
+      final response = await _dio.post(
+        '/students/notifications/settings',
+        data: {'deviceToken': token},
+      );
 
       if (response.statusCode == 200 && response.data != null) {
         return NotificationSettingModel.fromJson(response.data);
@@ -19,13 +24,14 @@ class NotificationSettingRemoteDataSource {
     }
   }
 
-  Future<NotificationSettingModel> updateStudentInfo(
+  Future<NotificationSettingModel> updateNotificationSetting(
     NotificationSettingModel settings,
   ) async {
     try {
+      String? token = await FirebaseMessaging.instance.getToken();
       final response = await _dio.put(
         '/students/notifications/settings',
-        data: settings.toJson(),
+        data: settings.copyWith(deviceToken: token).toJson(),
       );
 
       if (response.statusCode == 200 && response.data != null) {
